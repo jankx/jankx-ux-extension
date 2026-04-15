@@ -18,12 +18,13 @@ define('JUX_BUILDER_URL', JANKX_UX_URL);
 // Required files
 require_once JUX_BUILDER_PATH . '/helpers.php';
 
-// Stop here if the builder is not active
+// Always load Application (needed for AJAX)
+add_action('init', function() {
+    \Jankx\Extensions\JankxUX\Builder\Core\Application::getInstance();
+}, 20);
+
+// Stop UI-specific features if builder not active
 if (!jux_builder_is_active()) {
-    // Still initialize Application for non-builder contexts
-    add_action('init', function() {
-        \Jankx\Extensions\JankxUX\Builder\Core\Application::getInstance();
-    }, 20);
     return;
 }
 

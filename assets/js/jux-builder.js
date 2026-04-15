@@ -439,11 +439,16 @@
 
             console.log('Sending shortcodes for render:', shortcodes);
 
-            // AJAX render
-            $.post(ajaxUrl, {
-                action: 'jux_builder_render_preview',
-                nonce: nonce,
-                shortcodes: shortcodes
+            // AJAX render - must use proper POST with JSON
+            $.ajax({
+                url: ajaxUrl,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'jux_builder_render_preview',
+                    nonce: nonce,
+                    shortcodes: shortcodes
+                }
             }).done(function(response) {
                 console.log('AJAX response:', response);
                 if (response.success && response.data.rendered) {

@@ -136,7 +136,12 @@ class AjaxManager
      */
     public function handleRenderPreview()
     {
-        check_ajax_referer('jux_builder_nonce', 'nonce');
+        // Debug nonce
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field($_POST['nonce']) : '';
+        if (!wp_verify_nonce($nonce, 'jux_builder_nonce')) {
+            wp_send_json_error('Invalid nonce - received: ' . substr($nonce, 0, 10) . '...');
+            return;
+        }
 
         if (!current_user_can('edit_posts')) {
             wp_send_json_error('Permission denied');
