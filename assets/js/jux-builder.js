@@ -409,16 +409,31 @@
                     var opt = el.options[key];
                     if (opt && typeof opt.default !== 'undefined') {
                         defaultOptions[key] = opt.default;
+                    }
+                });
+            }
 
-    self.$container = $('#jux-builder-app');
+            // Build a new node and add to hierarchy
+            var node = {
+                id: 'jux-' + Date.now(),
+                tag: tag,
+                name: el.name || tag,
+                info: el.info || '',
+                options: defaultOptions,
+                children: el.wrap || el.type === 'container' ? [] : null
+            };
 
-    // Build default options from element config
-    var defaultOptions = {};
-    if (el.options) {
-        Object.keys(el.options).forEach(function(key) {
-            var opt = el.options[key];
-            if (opt && typeof opt.default !== 'undefined') {
-                defaultOptions[key] = opt.default;
+            // Add to history nodes
+            self.historyNodes.push(node);
+            self.currentNodeIndex = self.historyNodes.length;
+
+            // Refresh UI
+            self.refreshHierarchy();
+            self.updatePreview();
+
+            console.log('Added element:', node);
+        },
+
         refreshHierarchy: function() {
             this.renderHierarchy(this.historyNodes || []);
         },
