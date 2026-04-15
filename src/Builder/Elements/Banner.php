@@ -6,7 +6,7 @@ namespace Jankx\Extensions\JankxUX\Builder\Elements;
  */
 class Banner extends AbstractElement
 {
-    public function getTag(): string
+    public static function getTag(): string
     {
         return 'ux_banner';
     }
