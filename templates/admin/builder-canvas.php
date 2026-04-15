@@ -806,43 +806,120 @@ window.juxBuilderData = {
 .jux-loader-text { font-size: 14px; font-weight: 600; color: #444; }
 @keyframes jux-spin { to { transform: rotate(360deg); } }
 
-/* Shortcode Options Styles */
-.jux-option-group { margin-bottom: 16px; }
+/* Shortcode Options Styles - Flatsome-inspired */
+.jux-option-group {
+    margin-bottom: 20px;
+    background: #fafafa;
+    border-radius: 4px;
+    padding: 12px;
+    border: 1px solid #eee;
+}
 .jux-option-label {
-    display: block;
-    font-size: 10px;
-    font-weight: 700;
-    color: #555;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #444;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+}
+.jux-option-label::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    background: var(--jux-blue);
+    margin-right: 8px;
+    border-radius: 2px;
 }
 .jux-option-field input[type="text"],
 .jux-option-field select,
 .jux-option-field textarea {
     width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    padding: 6px 8px;
-    font-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 13px;
     color: #333;
     outline: none;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 .jux-option-field input:focus,
-.jux-option-field select:focus { border-color: var(--jux-blue); }
-.jux-radio-buttons { display: flex; flex-wrap: wrap; gap: 4px; }
+.jux-option-field select:focus,
+.jux-option-field textarea:focus {
+    border-color: var(--jux-blue);
+    box-shadow: 0 0 0 2px rgba(0,124,186,0.1);
+}
+.jux-option-field textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+.jux-option-field select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+}
+.jux-radio-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
 .jux-radio-buttons label {
     flex: 1;
+    min-width: 60px;
     text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    padding: 5px 8px;
-    font-size: 11px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 12px;
     cursor: pointer;
-    white-space: nowrap;
+    background: #fff;
+    transition: all 0.2s;
 }
-.jux-radio-buttons label:has(input:checked) { background: var(--jux-blue); color: #fff; border-color: var(--jux-blue); }
+.jux-radio-buttons label:hover {
+    border-color: var(--jux-blue);
+    background: #f0f8ff;
+}
+.jux-radio-buttons label:has(input:checked) {
+    background: var(--jux-blue);
+    color: #fff;
+    border-color: var(--jux-blue);
+}
 .jux-radio-buttons input { display: none; }
+
+/* Color picker styling */
+.jux-option-field input[type="color"] {
+    width: 60px;
+    height: 36px;
+    padding: 2px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Checkbox styling */
+.jux-option-field input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Element Name field special styling */
+.jux-option-group:first-child {
+    background: #fff;
+    border: 2px solid var(--jux-blue);
+}
+.jux-option-group:first-child .jux-option-label {
+    color: var(--jux-blue);
+    font-weight: 700;
+}
 
 /* Collapse expand button (when sidebar is collapsed) */
 .jux-sidebar-expand {
