@@ -386,14 +386,17 @@
         // Save post
         // ==========================================
         savePost: function() {
+            var self = this;
             var $btn = $('#jux-save-footer');
             $btn.text('Saving...');
 
-            $.post(window.ajaxurl || '/wp-admin/admin-ajax.php', {
+            var data = window.juxBuilderData || {};
+
+            $.post(data.ajaxUrl || window.ajaxurl || '/wp-admin/admin-ajax.php', {
                 action: 'jux_save_content',
-                post_id: this.postId,
-                security: (window.JUX_Builder && window.JUX_Builder.nonce) || '',
-                content: this.getShortcodeContent()
+                post_id: self.postId || data.postId,
+                security: data.nonce || '',
+                content: self.getShortcodeContent()
             }).done(function(response) {
                 if (response.success) {
                     $btn.text('Saved!');
