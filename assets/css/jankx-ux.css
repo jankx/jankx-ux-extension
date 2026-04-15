@@ -109,7 +109,51 @@
 .jux-relative  { position: relative; }
 .jux-absolute  { position: absolute; }
 
-/* Visibility */
+/* Medium columns (tablet) */
+@media (min-width: 550px) and (max-width: 849px) {
+    .medium-1  { flex: 0 0 8.333333%; max-width: 8.333333%; }
+    .medium-2  { flex: 0 0 16.666667%; max-width: 16.666667%; }
+    .medium-3  { flex: 0 0 25%; max-width: 25%; }
+    .medium-4  { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .medium-5  { flex: 0 0 41.666667%; max-width: 41.666667%; }
+    .medium-6  { flex: 0 0 50%; max-width: 50%; }
+    .medium-7  { flex: 0 0 58.333333%; max-width: 58.333333%; }
+    .medium-8  { flex: 0 0 66.666667%; max-width: 66.666667%; }
+    .medium-9  { flex: 0 0 75%; max-width: 75%; }
+    .medium-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+    .medium-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+    .medium-12 { flex: 0 0 100%; max-width: 100%; }
+}
+
+/* Small columns (mobile) */
 @media (max-width: 549px) {
+    .small-1  { flex: 0 0 8.333333%; max-width: 8.333333%; }
+    .small-2  { flex: 0 0 16.666667%; max-width: 16.666667%; }
+    .small-3  { flex: 0 0 25%; max-width: 25%; }
+    .small-4  { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .small-5  { flex: 0 0 41.666667%; max-width: 41.666667%; }
+    .small-6  { flex: 0 0 50%; max-width: 50%; }
+    .small-7  { flex: 0 0 58.333333%; max-width: 58.333333%; }
+    .small-8  { flex: 0 0 66.666667%; max-width: 66.666667%; }
+    .small-9  { flex: 0 0 75%; max-width: 75%; }
+    .small-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+    .small-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+    .small-12 { flex: 0 0 100%; max-width: 100%; }
+    
     .hide-for-small { display: none !important; }
 }
+
+/* Row alignment classes (Flatsome style) */
+.row.align-center { justify-content: center; }
+.row.align-left { justify-content: flex-start; }
+.row.align-right { justify-content: flex-end; }
+.row.align-middle { align-items: center; }
+.row.align-top { align-items: flex-start; }
+.row.align-bottom { align-items: flex-end; }
+
+/* Row box shadows */
+.row-box-shadow-1 { box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.row-box-shadow-2 { box-shadow: 0 4px 8px rgba(0,0,0,0.12); }
+.row-box-shadow-3 { box-shadow: 0 8px 16px rgba(0,0,0,0.15); }
+.row-box-shadow-4 { box-shadow: 0 12px 24px rgba(0,0,0,0.18); }
+.row-box-shadow-5 { box-shadow: 0 16px 32px rgba(0,0,0,0.2); }
