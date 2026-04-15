@@ -57,7 +57,7 @@ class Row extends AbstractElement
 
     public static function render($atts = [], $content = '')
     {
-        // Parse atts and ignore _jux_id (builder tracking only)
+        // Parse atts - match Flatsome exactly
         $options = shortcode_atts([
             '_id' => 'row-' . rand(),
             '_jux_id' => '',
@@ -74,9 +74,11 @@ class Row extends AbstractElement
             'depth' => '',
             'depth_hover' => '',
             'padding' => '',
+            'col_bg' => '',
+            'col_bg_radius' => '',
         ], $atts);
 
-        // Stop if visibility is hidden
+        // Hide if visibility is hidden
         if ($options['visibility'] === 'hidden') return '';
 
         $classes = ['row'];
@@ -87,7 +89,7 @@ class Row extends AbstractElement
         // Add Row Width
         if ($options['width'] === 'full-width') $classes[] = 'row-full-width';
 
-        // Column Vertical Align (Flatsome uses 'align-' not 'row-valign-')
+        // Column Vertical Align - Flatsome uses 'align-{val}'
         if (!empty($options['v_align'])) $classes[] = 'align-' . esc_attr($options['v_align']);
 
         // Column Horizontal Align
@@ -100,20 +102,20 @@ class Row extends AbstractElement
         if (!empty($options['class'])) $classes[] = esc_attr($options['class']);
         if (!empty($options['visibility'])) $classes[] = esc_attr($options['visibility']);
 
-        // Depth
+        // Depth - Flatsome uses 'row-box-shadow-{n}'
         if (!empty($options['depth'])) $classes[] = 'row-box-shadow-' . intval($options['depth']);
         if (!empty($options['depth_hover'])) $classes[] = 'row-box-shadow-' . intval($options['depth_hover']) . '-hover';
 
-        // Custom Width
-        $custom_width = '';
+        // Custom Width style
+        $custom_width_attr = '';
         if ($options['width'] === 'custom' && !empty($options['custom_width'])) {
-            $custom_width = 'style="max-width:' . esc_attr($options['custom_width']) . '"';
+            $custom_width_attr = 'style="max-width:' . esc_attr($options['custom_width']) . '"';
         }
 
         $classString = implode(' ', $classes);
         $id = esc_attr($options['_id']);
 
-        return '<div class="' . esc_attr($classString) . '" ' . $custom_width . ' id="' . $id . '">'
+        return '<div class="' . esc_attr($classString) . '" ' . $custom_width_attr . ' id="' . $id . '">'
             . do_shortcode($content)
             . '</div>';
     }
