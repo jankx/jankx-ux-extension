@@ -1,0 +1,12 @@
+{
+    "name": "@jankx/safe-iframe",
+    "version": "1.0.0",
+    "description": "Safe Iframe Block",
+    "devDependencies": {
+        "@wordpress/scripts": "^30.23.0"
+    },
+    "scripts": {
+        "build": "wp-scripts build",
+        "start": "wp-scripts start"
+    }
+}

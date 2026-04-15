@@ -1,0 +1,15 @@
+{
+    "name": "jankx/jankx-ux",
+    "description": "Jankx UX Extension - Professional re-implementation of UX patterns with PSR-4 and static classes.",
+    "type": "jankx-extension",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Jankx\\Extensions\\JankxUX\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "brain/monkey": "^2.6"
+    }
+}

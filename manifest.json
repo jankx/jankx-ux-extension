@@ -1,0 +1,14 @@
+{
+    "name": "Jankx UX",
+    "version": "1.0.0",
+    "description": "Flatsome-inspired structure, hooks, and blocks for Jankx.",
+    "author": "Jankx",
+    "extension_id": "jankx-ux",
+    "caller": {
+        "file": "JankxUXExtension.php",
+        "class": "Jankx\\Extensions\\JankxUX\\JankxUXExtension",
+        "method": "init"
+    },
+    "auto_activate": true,
+    "enabled": true
+}

@@ -1,0 +1,42 @@
+/**
+ * Jankx UX Builder - Editor Styles
+ */
+
+.jux-builder-element-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    background: #fff;
+    transition: background 0.2s;
+}
+
+.jux-builder-element-item:hover {
+    background: #f9f9f9;
+}
+
+.jux-builder-element-item strong {
+    display: block;
+    font-size: 14px;
+    color: #23282d;
+}
+
+.jux-builder-element-item p {
+    margin: 5px 0 0;
+    font-size: 11px;
+    color: #666;
+    text-transform: uppercase;
+}
+
+/* Sidebar Styling */
+.jux-builder-sidebar {
+    background: #fff;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    z-index: 10;
+}
+
+.jux-controls-header {
+    padding: 20px;
+    background: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+}

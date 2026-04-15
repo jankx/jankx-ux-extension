@@ -1,0 +1,115 @@
+/**
+ * Jankx UX Design System
+ * 
+ * A professional, open-source re-implementation of common UX patterns
+ * with compatibility for Flatsome-style naming conventions.
+ */
+
+:root {
+    /* Brand Colors - Standardized */
+    --jux-primary-color: #446084;
+    --jux-secondary-color: #d26e4b;
+    --jux-success-color: #7a9c59;
+    --jux-alert-color: #b22828;
+    
+    /* Layout Tokens */
+    --jux-container-width: 1080px;
+    --jux-grid-gutter: 30px;
+    --jux-column-padding: 15px;
+    
+    /* Compatibility Aliases */
+    --fs-color-primary: var(--jux-primary-color);
+    --fs-color-secondary: var(--jux-secondary-color);
+    --fs-color-success: var(--jux-success-color);
+    --fs-color-alert: var(--jux-alert-color);
+}
+
+/* Modern Layout System (Flex-based) */
+.jux-row, .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: calc(var(--jux-column-padding) * -1);
+    margin-left: calc(var(--jux-column-padding) * -1);
+    width: auto;
+    max-width: var(--jux-container-width);
+    margin: 0 auto;
+}
+
+.jux-col, .col {
+    position: relative;
+    width: 100%;
+    padding-right: var(--jux-column-padding);
+    padding-left: var(--jux-column-padding);
+    padding-bottom: var(--jux-grid-gutter);
+}
+
+.col-inner {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Responsive Grid - Professional Implementation */
+@media (min-width: 850px) {
+    .large-1  { flex: 0 0 8.333333%; max-width: 8.333333%; }
+    .large-2  { flex: 0 0 16.666667%; max-width: 16.666667%; }
+    .large-3  { flex: 0 0 25%; max-width: 25%; }
+    .large-4  { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .large-5  { flex: 0 0 41.666667%; max-width: 41.666667%; }
+    .large-6  { flex: 0 0 50%; max-width: 50%; }
+    .large-7  { flex: 0 0 58.333333%; max-width: 58.333333%; }
+    .large-8  { flex: 0 0 66.666667%; max-width: 66.666667%; }
+    .large-9  { flex: 0 0 75%; max-width: 75%; }
+    .large-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+    .large-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+    .large-12 { flex: 0 0 100%; max-width: 100%; }
+
+    /* Row level columns */
+    .large-columns-1 > .col { flex: 0 0 100%; max-width: 100%; }
+    .large-columns-2 > .col { flex: 0 0 50%; max-width: 50%; }
+    .large-columns-3 > .col { flex: 0 0 33.333333%; max-width: 33.333333%; }
+    .large-columns-4 > .col { flex: 0 0 25%; max-width: 25%; }
+    .large-columns-5 > .col { flex: 0 0 20%; max-width: 20%; }
+    .large-columns-6 > .col { flex: 0 0 16.666667%; max-width: 16.666667%; }
+}
+
+/* Interactive Elements */
+.jux-button, .button {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: var(--jux-primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+}
+
+.jux-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    filter: brightness(1.1);
+}
+
+.button.secondary { background-color: var(--jux-secondary-color); }
+.button.success   { background-color: var(--jux-success-color); }
+.button.alert     { background-color: var(--jux-alert-color); }
+
+/* Utility Classes */
+.jux-uppercase { text-transform: uppercase; }
+.jux-relative  { position: relative; }
+.jux-absolute  { position: absolute; }
+
+/* Visibility */
+@media (max-width: 549px) {
+    .hide-for-small { display: none !important; }
+}
