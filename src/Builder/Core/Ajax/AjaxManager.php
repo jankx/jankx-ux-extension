@@ -14,12 +14,13 @@ class AjaxManager
 
     public function __construct()
     {
+        die('zo');
         $this->registerHooks();
     }
 
     protected function registerHooks()
     {
-        add_action('wp_ajax_jux_builder_save', [$this, 'handleSave']);
+        add_action('wp_ajax_jux_save_content', [$this, 'handleSave']);
         add_action('wp_ajax_jux_builder_do_shortcode', [$this, 'handleDoShortcode']);
         add_action('wp_ajax_jux_builder_get_elements', [$this, 'handleGetElements']);
         add_action('wp_ajax_jux_builder_copy_as_shortcode', [$this, 'handleCopyAsShortcode']);
