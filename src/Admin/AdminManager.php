@@ -33,7 +33,7 @@ class AdminManager
         $post = get_post($post_id);
 
         // Ensure Application is bootstrapped with container services
-        Application::get()->bootstrap();
+        Application::getInstance()->bootstrap();
 
         jux_get_template_part('admin/builder', 'canvas', [
             'post'    => $post,

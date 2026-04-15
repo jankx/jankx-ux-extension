@@ -5,12 +5,10 @@
  *  - Sidebar default = Hierarchy list (home view)
  *  - "+" opens app-stack overlay with element picker
  *  - Clicking gear on element = shortcode settings view in sidebar
+ *
+ * NOTE: juxBuilderData is already injected by Application::enqueueEditorAssets()
+ * via wp_add_inline_script() before jux-builder-core loads. Do NOT redefine it here.
  */
-
-$app = \Jankx\Extensions\JankxUX\Builder\Core\Application::getInstance();
-$editingPost = $app->resolve('editing-post');
-$post = $editingPost ? $editingPost->post() : get_post();
-$post_id = $post ? $post->ID : 0;
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -27,16 +25,6 @@ $post_id = $post ? $post->ID : 0;
     ?>
 </head>
 <body class="wp-admin wp-core-ui jux-builder-body">
-<script>
-// JUX Builder Data - inline to ensure it's available immediately
-window.juxBuilderData = {
-    ajaxUrl: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
-    nonce: '<?php echo esc_js(wp_create_nonce('jux_builder_nonce')); ?>',
-    postId: <?php echo intval($post->ID ?? 0); ?>,
-    postTitle: '<?php echo esc_js($post->post_title ?? ''); ?>',
-    elements: <?php echo wp_json_encode(\Jankx\Extensions\JankxUX\Builder\BuilderManager::getCategorizedElements()); ?>
-};
-</script>
 
 <div id="jux-builder-wrapper" class="jux-builder-ui jux-loading">
 
