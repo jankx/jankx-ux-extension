@@ -50,6 +50,18 @@ add_action('after_setup_theme', function() {
     \Jankx\Extensions\JankxUX\Builder\Core\Application::getInstance();
 }, 20);
 
+// Also load in admin/AJAX context
+add_action('admin_init', function() {
+    \Jankx\Extensions\JankxUX\Builder\Core\Application::getInstance();
+}, 1);
+
+// Early init for all contexts (including AJAX)
+add_action('init', function() {
+    if (defined('DOING_AJAX') && DOING_AJAX) {
+        \Jankx\Extensions\JankxUX\Builder\Core\Application::getInstance();
+    }
+}, 1);
+
 // Add "Edit with UX Builder" button to admin bar
 add_action('admin_bar_menu', function($wp_admin_bar) {
     if (!is_admin() && is_singular()) {
