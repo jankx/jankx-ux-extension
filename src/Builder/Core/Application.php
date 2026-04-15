@@ -265,6 +265,10 @@ class Application
 
         wp_localize_script('jux-builder-core', 'juxBuilderData', $data);
 
+        // Also add as inline script to ensure it's available
+        $inlineScript = 'var juxBuilderData = ' . wp_json_encode($data) . ';';
+        wp_add_inline_script('jux-builder-core', $inlineScript, 'before');
+
         do_action('jux_builder_enqueue_scripts', 'editor');
     }
 
