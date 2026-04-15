@@ -14,8 +14,12 @@ abstract class AbstractElement
 
     /**
      * Get element configuration
+     * Override in child class
      */
-    abstract protected static function getConfig();
+    protected static function getConfig()
+    {
+        return [];
+    }
 
     /**
      * Get element tag
