@@ -2,6 +2,7 @@
 namespace Jankx\Extensions\JankxUX\Admin;
 
 use Jankx\Extensions\JankxUX\JankxUXExtension;
+use Jankx\Extensions\JankxUX\Builder\Core\Application;
 
 class AdminManager
 {
@@ -30,6 +31,9 @@ class AdminManager
     {
         $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
         $post = get_post($post_id);
+
+        // Ensure Application is bootstrapped with container services
+        Application::get()->bootstrap();
 
         jux_get_template_part('admin/builder', 'canvas', [
             'post'    => $post,

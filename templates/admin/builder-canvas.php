@@ -6,7 +6,27 @@
  *  - "+" opens app-stack overlay with element picker
  *  - Clicking gear on element = shortcode settings view in sidebar
  */
+
+$app = \Jankx\Extensions\JankxUX\Builder\Core\Application::getInstance();
+$editingPost = $app->resolve('editing-post');
+$post = $editingPost ? $editingPost->post() : get_post();
+$post_id = $post ? $post->ID : 0;
 ?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+    <meta charset="<?php bloginfo( 'charset' ); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?php _e('JUX Builder', 'jankx'); ?></title>
+    <?php
+    wp_print_styles();
+    wp_print_scripts();
+    do_action('admin_print_styles');
+    do_action('admin_print_scripts');
+    do_action('admin_head');
+    ?>
+</head>
+<body class="wp-admin wp-core-ui jux-builder-body">
 <script>
 // JUX Builder Data - inline to ensure it's available immediately
 window.juxBuilderData = {
@@ -938,3 +958,10 @@ window.juxBuilderData = {
     z-index: 10;
 }
 </style>
+<?php
+do_action('admin_print_footer_scripts');
+do_action('admin_footer');
+wp_print_footer_scripts();
+?>
+</body>
+</html>

@@ -5,6 +5,7 @@
 
         currentView: 'home',      // 'home' | 'shortcode' | 'settings'
         selectedShortcode: null,
+        historyNodes: [],
         history: [],
         historyIndex: -1,
         elements: (typeof juxBuilderData !== 'undefined' && juxBuilderData.elements) ? juxBuilderData.elements : {},
@@ -398,6 +399,15 @@
             var self = this;
             var el = self.elements[tag];
             if (!el) {
+                for (var key in self.elements) {
+                    if (key.toLowerCase() === String(tag).toLowerCase()) {
+                        el = self.elements[key];
+                        tag = key;
+                        break;
+                    }
+                }
+            }
+            if (!el) {
                 console.error('Element not found:', tag);
                 return;
             }
@@ -624,7 +634,8 @@
             JUXBuilder.postTitle = data.postTitle || '';
             // elements already set at top
 
-            JUXBuilder.renderHierarchy(data.contentNodes || []);
+            JUXBuilder.historyNodes = data.contentNodes || [];
+            JUXBuilder.renderHierarchy(JUXBuilder.historyNodes);
         }
     };
 
