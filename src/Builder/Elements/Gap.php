@@ -53,7 +53,7 @@ class Gap extends AbstractElement
         return 'layout';
     }
 
-    public function render(array $options, string $content = ''): string
+    public static function render($options = [], $content = ''): string
     {
         $height = !empty($options['height']) ? esc_attr($options['height']) : '30px';
         return '<div class="gap-element" style="display:block; height:auto; padding-top:' . $height . ';"></div>';

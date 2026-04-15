@@ -109,7 +109,7 @@ class Image extends AbstractElement
         return 'content';
     }
 
-    public function render(array $options, string $content = ''): string
+    public static function render($options = [], $content = ''): string
     {
         $imageId = !empty($options['id']) ? intval($options['id']) : 0;
         $imageSize = !empty($options['image_size']) ? $options['image_size'] : 'large';

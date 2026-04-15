@@ -104,7 +104,7 @@ class Banner extends AbstractElement
         return 'content';
     }
 
-    public function render(array $options, string $content = ''): string
+    public static function render($options = [], $content = ''): string
     {
         $classes = ['banner', 'has-hover'];
         $style = '';
