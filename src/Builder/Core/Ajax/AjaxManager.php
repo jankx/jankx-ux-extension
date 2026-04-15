@@ -1,6 +1,9 @@
 <?php
 namespace Jankx\Extensions\JankxUX\Builder\Core\Ajax;
 
+use Jankx\Extensions\JankxUX\Builder\ElementRegistry;
+use Jankx\Extensions\JankxUX\Shortcodes\ShortcodeManager;
+
 /**
  * Ajax Manager for UX Builder
  * Handles all AJAX requests from the builder interface
@@ -20,6 +23,7 @@ class AjaxManager
         add_action('wp_ajax_jux_builder_do_shortcode', [$this, 'handleDoShortcode']);
         add_action('wp_ajax_jux_builder_get_elements', [$this, 'handleGetElements']);
         add_action('wp_ajax_jux_builder_copy_as_shortcode', [$this, 'handleCopyAsShortcode']);
+        add_action('wp_ajax_jux_builder_render_preview', [$this, 'handleRenderPreview']);
     }
 
     /**
@@ -123,6 +127,40 @@ class AjaxManager
         
         wp_send_json_success([
             'shortcode' => $content,
+        ]);
+    }
+
+    /**
+     * Handle live preview rendering (no page reload)
+     */
+    public function handleRenderPreview()
+    {
+        check_ajax_referer('jux_builder_nonce', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error('Permission denied');
+        }
+
+        $shortcodes = isset($_POST['shortcodes']) ? wp_unslash($_POST['shortcodes']) : [];
+        $rendered = [];
+
+        foreach ($shortcodes as $item) {
+            $tag = isset($item['tag']) ? sanitize_key($item['tag']) : '';
+            $atts = isset($item['atts']) ? (array) $item['atts'] : [];
+            $content = isset($item['content']) ? wp_kses_post($item['content']) : '';
+
+            // Render using ShortcodeManager
+            $html = ShortcodeManager::render($tag, $atts, $content);
+
+            $rendered[] = [
+                'id' => $item['id'] ?? '',
+                'html' => $html,
+                'tag' => $tag,
+            ];
+        }
+
+        wp_send_json_success([
+            'rendered' => $rendered,
         ]);
     }
 

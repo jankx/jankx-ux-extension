@@ -49,25 +49,50 @@ class Column extends AbstractElement
     public static function render($atts = [], $content = '')
     {
         $options = shortcode_atts([
+            '_id' => 'col-' . rand(),
             'span' => '12',
+            'span__md' => '',
+            'span__sm' => '',
             'class' => '',
+            'visibility' => '',
+            'animate' => '',
+            'parallax' => '',
+            'depth' => '',
+            'depth_hover' => '',
+            'padding' => '',
         ], $atts);
+
+        // Stop if visibility is hidden
+        if ($options['visibility'] === 'hidden') return '';
 
         $span = intval($options['span']);
         $classes = ['col', 'medium-' . $span];
 
-        if (!empty($options['class'])) {
-            $classes[] = esc_attr($options['class']);
-        }
+        // Responsive classes
+        if (!empty($options['span__md'])) $classes[] = 'small-' . intval($options['span__md']);
+        if (!empty($options['span__sm'])) $classes[] = 'small-' . intval($options['span__sm']);
+
+        // Animation
+        if (!empty($options['animate'])) $classes[] = 'animated ' . esc_attr($options['animate']);
+
+        // Parallax
+        if (!empty($options['parallax'])) $classes[] = 'parallax';
+
+        // Depth
+        if (!empty($options['depth'])) $classes[] = 'box-shadow-' . intval($options['depth']);
+        if (!empty($options['depth_hover'])) $classes[] = 'box-shadow-' . intval($options['depth_hover']) . '-hover';
+
+        // Custom class & visibility
+        if (!empty($options['class'])) $classes[] = esc_attr($options['class']);
+        if (!empty($options['visibility'])) $classes[] = esc_attr($options['visibility']);
 
         $classString = implode(' ', $classes);
+        $id = esc_attr($options['_id']);
 
-        $html = '<div class="' . esc_attr($classString) . '">';
-        $html .= '<div class="col-inner">';
-        $html .= do_shortcode($content);
-        $html .= '</div>';
-        $html .= '</div>';
-
-        return $html;
+        return '<div class="' . esc_attr($classString) . '" id="' . $id . '">'
+            . '<div class="col-inner">'
+            . do_shortcode($content)
+            . '</div>'
+            . '</div>';
     }
 }

@@ -58,31 +58,61 @@ class Row extends AbstractElement
     public static function render($atts = [], $content = '')
     {
         $options = shortcode_atts([
-            'style' => 'default',
-            'v_align' => '',
+            '_id' => 'row-' . rand(),
+            'style' => '',
+            'col_style' => '',
+            'label' => '',
+            'border_color' => '',
+            'width' => '',
+            'custom_width' => '',
             'class' => '',
+            'visibility' => '',
+            'v_align' => '',
+            'h_align' => '',
+            'depth' => '',
+            'depth_hover' => '',
+            'padding' => '',
         ], $atts);
+
+        // Stop if visibility is hidden
+        if ($options['visibility'] === 'hidden') return '';
 
         $classes = ['row'];
 
-        if (!empty($options['style']) && $options['style'] !== 'default') {
-            $classes[] = 'row-' . esc_attr($options['style']);
-        }
+        // Add Row style
+        if (!empty($options['style'])) $classes[] = 'row-' . esc_attr($options['style']);
 
-        if (!empty($options['v_align'])) {
-            $classes[] = 'row-valign-' . esc_attr($options['v_align']);
-        }
+        // Add Row Width
+        if ($options['width'] === 'full-width') $classes[] = 'row-full-width';
 
-        if (!empty($options['class'])) {
-            $classes[] = esc_attr($options['class']);
+        // Column Vertical Align (Flatsome uses 'align-' not 'row-valign-')
+        if (!empty($options['v_align'])) $classes[] = 'align-' . esc_attr($options['v_align']);
+
+        // Column Horizontal Align
+        if (!empty($options['h_align'])) $classes[] = 'align-' . esc_attr($options['h_align']);
+
+        // Column style
+        if (!empty($options['col_style'])) $classes[] = 'row-' . esc_attr($options['col_style']);
+
+        // Custom Class & Visibility
+        if (!empty($options['class'])) $classes[] = esc_attr($options['class']);
+        if (!empty($options['visibility'])) $classes[] = esc_attr($options['visibility']);
+
+        // Depth
+        if (!empty($options['depth'])) $classes[] = 'row-box-shadow-' . intval($options['depth']);
+        if (!empty($options['depth_hover'])) $classes[] = 'row-box-shadow-' . intval($options['depth_hover']) . '-hover';
+
+        // Custom Width
+        $custom_width = '';
+        if ($options['width'] === 'custom' && !empty($options['custom_width'])) {
+            $custom_width = 'style="max-width:' . esc_attr($options['custom_width']) . '"';
         }
 
         $classString = implode(' ', $classes);
+        $id = esc_attr($options['_id']);
 
-        $html = '<div class="' . esc_attr($classString) . '">';
-        $html .= do_shortcode($content);
-        $html .= '</div>';
-
-        return $html;
+        return '<div class="' . esc_attr($classString) . '" ' . $custom_width . ' id="' . $id . '">'
+            . do_shortcode($content)
+            . '</div>';
     }
 }
