@@ -396,32 +396,16 @@
                     var opt = el.options[key];
                     if (opt && typeof opt.default !== 'undefined') {
                         defaultOptions[key] = opt.default;
-                    }
-                });
-            }
 
-            // Build a new node and add to hierarchy
-            var node = {
-                id: 'jux-' + Date.now(),
-                tag: tag,
-                name: el.name || tag,
-                info: el.info || '',
-                options: defaultOptions,
-                children: el.wrap || el.type === 'container' ? [] : null
-            };
+    self.$container = $('#jux-builder-app');
 
-            self.historyNodes = self.historyNodes || [];
-            self.historyNodes.push(node);
-            console.log('Added element:', node);
-
-            self.refreshHierarchy();
-
-            // Trigger preview update
-            setTimeout(function() {
-                self.updatePreview();
-            }, 100);
-        },
-
+    // Build default options from element config
+    var defaultOptions = {};
+    if (el.options) {
+        Object.keys(el.options).forEach(function(key) {
+            var opt = el.options[key];
+            if (opt && typeof opt.default !== 'undefined') {
+                defaultOptions[key] = opt.default;
         refreshHierarchy: function() {
             this.renderHierarchy(this.historyNodes || []);
         },
