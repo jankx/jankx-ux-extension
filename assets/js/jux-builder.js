@@ -159,9 +159,22 @@
 
         configureNode: function(node) {
             this.selectedShortcode = node;
+            // Merge stored options with element template defaults
+            var elementConfig = this.elements[node.tag] || {};
+            var templateOptions = elementConfig.options || {};
+            var storedOptions = node.options || {};
+            
+            // Create merged options: template structure + stored values
+            var mergedOptions = {};
+            Object.keys(templateOptions).forEach(function(key) {
+                mergedOptions[key] = $.extend({}, templateOptions[key], {
+                    value: storedOptions[key] !== undefined ? storedOptions[key] : templateOptions[key].default
+                });
+            });
+            
             this.goto('shortcode', {
                 name: node.name || node.tag,
-                options: this.elements[node.tag] ? this.elements[node.tag].options : {}
+                options: mergedOptions
             });
         },
 

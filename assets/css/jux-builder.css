@@ -28,6 +28,36 @@
 }
 
 /* Sidebar Styling */
+
+/* Preview Element Highlighting */
+.jux-element-wrapper {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.jux-element-wrapper.jux-hover {
+    outline: 2px dashed #007cba;
+    outline-offset: 2px;
+    cursor: pointer;
+}
+
+.jux-element-wrapper.jux-selected {
+    outline: 2px solid #007cba;
+    outline-offset: 2px;
+}
+
+.jux-element-wrapper.jux-selected::before {
+    content: attr(data-tag);
+    position: absolute;
+    top: -20px;
+    left: 0;
+    background: #007cba;
+    color: #fff;
+    padding: 2px 8px;
+    font-size: 11px;
+    border-radius: 2px;
+    z-index: 1000;
+}
 .jux-builder-sidebar {
     background: #fff;
     box-shadow: 2px 0 5px rgba(0,0,0,0.05);

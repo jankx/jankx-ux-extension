@@ -93,30 +93,41 @@
         // Add click handlers to elements for builder selection
         addClickHandlers: function(id) {
             var self = this;
-            var selector = id ? '[data-jux-id="' + id + '"] > *' : '.row, .col, .section, .slider';
+            // Click on the wrapper itself or its children
+            var selector = id ? '[data-jux-id="' + id + '"]' : '[data-jux-id]';
+
+            // Remove existing handlers first to avoid duplicates
+            $(selector).off('click.jux');
 
             $(selector).each(function() {
-                var $this = $(this);
-                // Don't add handler if already has one
-                if ($this.data('jux-click')) return;
-                $this.data('jux-click', true);
+                var $wrapper = $(this);
+                var wrapperId = $wrapper.data('jux-id');
+                var tag = $wrapper.data('tag');
 
-                $this.on('click.jux', function(e) {
+                // Add hover effect
+                $wrapper.on('mouseenter.jux', function() {
+                    $(this).addClass('jux-hover');
+                }).on('mouseleave.jux', function() {
+                    $(this).removeClass('jux-hover');
+                });
+
+                // Click handler on wrapper
+                $wrapper.on('click.jux', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    // Find parent wrapper id
-                    var wrapperId = $(this).closest('[data-jux-id]').data('jux-id');
-                    if (!wrapperId) wrapperId = id;
+                    console.log('Preview element clicked:', wrapperId, tag);
 
+                    // Notify parent builder
                     window.parent.postMessage({
                         action: 'jux-element-click',
-                        id: wrapperId
+                        id: wrapperId,
+                        tag: tag
                     }, '*');
 
-                    // Highlight selected
-                    $('.jux-selected').removeClass('jux-selected');
-                    $(this).addClass('jux-selected');
+                    // Highlight this element
+                    $('[data-jux-id]').removeClass('jux-selected');
+                    $wrapper.addClass('jux-selected');
                 });
             });
         }
