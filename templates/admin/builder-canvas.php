@@ -17,6 +17,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php _e('JUX Builder', 'jankx'); ?></title>
     <?php
+    // Since WordPress 6.4.0, print_emoji_styles is deprecated.
+    // We remove it from the hook and use wp_enqueue_emoji_styles instead if it exists.
+    if (function_exists('wp_enqueue_emoji_styles')) {
+        remove_action('wp_print_styles', 'print_emoji_styles');
+        wp_enqueue_emoji_styles();
+    }
+
     wp_print_styles();
     wp_print_scripts();
     do_action('admin_print_styles');
