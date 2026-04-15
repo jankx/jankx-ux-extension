@@ -1,52 +1,60 @@
 <?php
 namespace Jankx\Extensions\JankxUX\Builder;
 
+/**
+ * Builder Manager - PSR-4 Static Class
+ * Uses ElementRegistry for PSR-4 element registration
+ */
 class BuilderManager
 {
-    protected static $elements = [];
-
-    public static function registerShortcode($tag, $args)
-    {
-        $defaults = array(
-            'type' => 'element',
-            'name' => $tag,
-            'category' => __('General', 'jankx'),
-            'options' => array(),
-        );
-        
-        self::$elements[$tag] = array_merge($defaults, $args);
-    }
-
-    public static function getElements()
-    {
-        return self::$elements;
-    }
-
-    public static function getCategorizedElements()
-    {
-        $categorized = [];
-        foreach (self::$elements as $tag => $el) {
-            $cat = isset($el['category']) ? strtoupper($el['category']) : strtoupper(__('General', 'jankx'));
-            $categorized[$cat][$tag] = $el;
-        }
-        return $categorized;
-    }
+    protected static $initialized = false;
 
     public static function init()
     {
-        add_action('init', [self::class, 'loadElements'], 20);
+        if (self::$initialized) {
+            return;
+        }
+        self::$initialized = true;
+
+        // Initialize Element Registry with PSR-4 autoloading
+        add_action('init', [ElementRegistry::class, 'init'], 10);
     }
 
-    public static function loadElements()
+    /**
+     * Get all elements from registry
+     */
+    public static function getElements()
     {
-        // Dynamically load shortcode builder registrations
-        // Note: For PSR-4, we might want to register them explicitly or scan
-        // but for Element Parity, scanning the directory is often easiest.
-        $path = dirname(dirname(__DIR__)) . '/inc/builder/shortcodes';
-        if (is_dir($path)) {
-            foreach (glob($path . '/*.php') as $file) {
-                require_once $file;
-            }
+        return ElementRegistry::all();
+    }
+
+    /**
+     * Get categorized elements
+     */
+    public static function getCategorizedElements()
+    {
+        return ElementRegistry::byCategory();
+    }
+
+    /**
+     * Register element (backward compatible)
+     */
+    public static function registerShortcode($tag, $config)
+    {
+        return ElementRegistry::register($tag, $config);
+    }
+
+    /**
+     * Render element
+     */
+    public static function render($tag, $options, $content = '')
+    {
+        $element = ElementRegistry::get($tag);
+        
+        if (!$element || !is_callable($element['template'])) {
+            return $content;
         }
+        
+        return call_user_func($element['template'], $options, $content);
     }
 }
