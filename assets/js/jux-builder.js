@@ -512,28 +512,6 @@
             });
         },
 
-        // Build nested content from children
-        buildContentFromChildren: function(children) {
-            var self = this;
-            var content = '';
-            (children || []).forEach(function(child) {
-                // Build shortcode string
-                var atts = [];
-                $.each(child.options || {}, function(key, val) {
-                    if (val !== '' && val !== null) {
-                        atts.push(key + '="' + val + '"');
-                    }
-                });
-                var attString = atts.length ? ' ' + atts.join(' ') : '';
-                if (child.children && child.children.length) {
-                    content += '[' + child.tag + attString + ']' + self.buildContentFromChildren(child.children) + '[/' + child.tag + ']';
-                } else {
-                    content += '[' + child.tag + attString + ']';
-                }
-            });
-            return content;
-        },
-
         // Update iframe content with rendered HTML
         updateIframeContent: function(renderedItems) {
             var frame = document.getElementById('jux-preview-frame');
