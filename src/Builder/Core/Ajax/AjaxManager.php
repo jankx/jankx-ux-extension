@@ -31,7 +31,12 @@ class AjaxManager
      */
     public function handleSave()
     {
-        check_ajax_referer('jux_builder_nonce', 'nonce');
+        // Verify nonce manually for better error handling
+        $nonce = isset($_POST['security']) ? sanitize_text_field($_POST['security']) : '';
+        if (!wp_verify_nonce($nonce, 'jux_builder_nonce')) {
+            wp_send_json_error('Invalid nonce. Please refresh the page.');
+            return;
+        }
 
         if (!current_user_can('edit_posts')) {
             wp_send_json_error('Permission denied');
