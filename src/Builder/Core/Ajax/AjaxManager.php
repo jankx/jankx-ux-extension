@@ -14,7 +14,6 @@ class AjaxManager
 
     public function __construct()
     {
-        die('zo');
         $this->registerHooks();
     }
 

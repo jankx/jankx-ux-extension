@@ -8,8 +8,18 @@
             "Jankx\\Extensions\\JankxUX\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Jankx\\Extensions\\JankxUX\\Tests\\": "tests/"
+        }
+    },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
         "brain/monkey": "^2.6"
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit",
+        "test-coverage": "./vendor/bin/phpunit --coverage-html coverage-report",
+        "test-watch": "./vendor/bin/phpunit --testdox --colors=always"
     }
 }
