@@ -103,6 +103,11 @@ class JankxUXExtension extends AbstractExtension
             
             // Allow other components to know we are in preview
             if (!defined('JUX_PREVIEW')) define('JUX_PREVIEW', true);
+            
+            // Add builder content container for preview
+            add_filter('the_content', function($content) {
+                return '<div id="jux-builder-content" class="jux-builder-content">' . $content . '</div>';
+            }, 999);
         }
     }
 

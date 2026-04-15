@@ -74,19 +74,17 @@
                 var $el = $('[data-jux-id="' + item.id + '"]');
 
                 if ($el.length) {
-                    // Replace existing element with new HTML (Flatsome style)
-                    $el.replaceWith(item.html);
+                    // Update existing element - replace inner HTML only
+                    $el.html($(item.html).html());
                 } else {
-                    // Append new HTML directly (no wrapper, match Flatsome output)
+                    // Append new HTML (contains wrapper with data-jux-id)
                     $container.append(item.html);
                 }
-
-                // Add click handlers to new elements
-                self.addClickHandlers(item.id);
             });
 
-            // Re-initialize droppable on new rows/cols
+            // Re-initialize droppable and click handlers
             self.makeDroppable();
+            self.addClickHandlers();
         },
 
         // Add click handlers to elements for builder selection
