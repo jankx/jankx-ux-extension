@@ -59,31 +59,64 @@
         },
 
         // Update content with rendered HTML from AJAX
+        // Renders exactly like Flatsome frontend output
         updateRenderedContent: function(items) {
             var self = this;
+            var $container = $('#jux-builder-content, .entry-content, .page-content, article, main, body').first();
+
+            // Clear container if first load
+            if (!self._initialized) {
+                $container.empty();
+                self._initialized = true;
+            }
+
             items.forEach(function(item) {
                 var $el = $('[data-jux-id="' + item.id + '"]');
-                if ($el.length) {
-                    // Update existing element
-                    $el.html(item.html);
-                } else {
-                    // Create new element wrapper
-                    var $wrapper = $('<div class="jux-element-wrapper" data-jux-id="' + item.id + '" data-tag="' + item.tag + '">');
-                    $wrapper.html(item.html);
-                    
-                    // Add click handler to select in builder
-                    $wrapper.on('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        window.parent.postMessage({
-                            action: 'jux-element-click',
-                            id: item.id
-                        }, '*');
-                    });
 
-                    // Append to content area or find appropriate container
-                    $('#jux-builder-content, .entry-content, article, main, body').first().append($wrapper);
+                if ($el.length) {
+                    // Replace existing element with new HTML (Flatsome style)
+                    $el.replaceWith(item.html);
+                } else {
+                    // Append new HTML directly (no wrapper, match Flatsome output)
+                    $container.append(item.html);
                 }
+
+                // Add click handlers to new elements
+                self.addClickHandlers(item.id);
+            });
+
+            // Re-initialize droppable on new rows/cols
+            self.makeDroppable();
+        },
+
+        // Add click handlers to elements for builder selection
+        addClickHandlers: function(id) {
+            var self = this;
+            var selector = id ? '[data-jux-id="' + id + '"] > *' : '.row, .col, .section, .slider';
+
+            $(selector).each(function() {
+                var $this = $(this);
+                // Don't add handler if already has one
+                if ($this.data('jux-click')) return;
+                $this.data('jux-click', true);
+
+                $this.on('click.jux', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Find parent wrapper id
+                    var wrapperId = $(this).closest('[data-jux-id]').data('jux-id');
+                    if (!wrapperId) wrapperId = id;
+
+                    window.parent.postMessage({
+                        action: 'jux-element-click',
+                        id: wrapperId
+                    }, '*');
+
+                    // Highlight selected
+                    $('.jux-selected').removeClass('jux-selected');
+                    $(this).addClass('jux-selected');
+                });
             });
         }
     };

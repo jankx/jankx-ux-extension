@@ -48,8 +48,10 @@ class Column extends AbstractElement
 
     public static function render($atts = [], $content = '')
     {
+        // Parse atts and ignore _jux_id (builder tracking only)
         $options = shortcode_atts([
             '_id' => 'col-' . rand(),
+            '_jux_id' => '',
             'span' => '12',
             'span__md' => '',
             'span__sm' => '',

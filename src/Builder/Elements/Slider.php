@@ -36,7 +36,9 @@ class Slider extends AbstractElement
 
     public static function render($atts = [], $content = '')
     {
+        // Parse atts and ignore _jux_id (builder tracking only)
         $options = shortcode_atts([
+            '_jux_id' => '',
             'class' => '',
             'timer' => '5000',
             'auto_slide' => 'true',

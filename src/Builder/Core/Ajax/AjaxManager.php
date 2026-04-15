@@ -132,6 +132,7 @@ class AjaxManager
 
     /**
      * Handle live preview rendering (no page reload)
+     * Returns HTML identical to Flatsome frontend
      */
     public function handleRenderPreview()
     {
@@ -145,15 +146,22 @@ class AjaxManager
         $rendered = [];
 
         foreach ($shortcodes as $item) {
+            $id = isset($item['id']) ? sanitize_text_field($item['id']) : '';
             $tag = isset($item['tag']) ? sanitize_key($item['tag']) : '';
             $atts = isset($item['atts']) ? (array) $item['atts'] : [];
             $content = isset($item['content']) ? wp_kses_post($item['content']) : '';
 
-            // Render using ShortcodeManager
+            // Add builder tracking ID
+            $atts['_jux_id'] = $id;
+
+            // Render using ShortcodeManager (identical to frontend)
             $html = ShortcodeManager::render($tag, $atts, $content);
 
+            // Wrap with tracking div for builder
+            $html = '<div class="jux-element-wrapper" data-jux-id="' . esc_attr($id) . '" data-tag="' . esc_attr($tag) . '">' . $html . '</div>';
+
             $rendered[] = [
-                'id' => $item['id'] ?? '',
+                'id' => $id,
                 'html' => $html,
                 'tag' => $tag,
             ];

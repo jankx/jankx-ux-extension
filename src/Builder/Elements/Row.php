@@ -57,8 +57,10 @@ class Row extends AbstractElement
 
     public static function render($atts = [], $content = '')
     {
+        // Parse atts and ignore _jux_id (builder tracking only)
         $options = shortcode_atts([
             '_id' => 'row-' . rand(),
+            '_jux_id' => '',
             'style' => '',
             'col_style' => '',
             'label' => '',

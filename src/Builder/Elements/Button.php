@@ -38,7 +38,9 @@ class Button extends AbstractElement
 
     public static function render($atts = [], $content = '')
     {
+        // Parse atts and ignore _jux_id (builder tracking only)
         $options = shortcode_atts([
+            '_jux_id' => '',
             'style' => 'primary',
             'size' => '',
             'radius' => '',
