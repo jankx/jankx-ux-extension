@@ -254,7 +254,7 @@ class Application
             'canPublish' => current_user_can('publish_post', $editingPost->id()),
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('jux_builder_nonce'),
-            'elements' => $this->container->resolve('elements')->all(),
+            'elements' => \Jankx\Extensions\JankxUX\Builder\ElementRegistry::all(),
             'l10n' => [
                 'save' => __('Save', 'jankx'),
                 'update' => __('Update', 'jankx'),
