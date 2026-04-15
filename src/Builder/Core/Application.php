@@ -214,6 +214,11 @@ class Application
     {
         // Initialize ElementRegistry to load all elements
         \Jankx\Extensions\JankxUX\Builder\ElementRegistry::init();
+        
+        // Debug: check if elements are loaded
+        $elements = \Jankx\Extensions\JankxUX\Builder\ElementRegistry::all();
+        error_log('JUX Elements loaded: ' . count($elements));
+        error_log('JUX Elements keys: ' . print_r(array_keys($elements), true));
 
         $version = $this->version;
         $assetsUrl = JANKX_UX_URL . 'assets/';
