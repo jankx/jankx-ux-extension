@@ -7,6 +7,17 @@
  *  - Clicking gear on element = shortcode settings view in sidebar
  */
 ?>
+<script>
+// JUX Builder Data - inline to ensure it's available immediately
+window.juxBuilderData = {
+    ajaxUrl: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
+    nonce: '<?php echo esc_js(wp_create_nonce('jux_builder_nonce')); ?>',
+    postId: <?php echo intval($post->ID ?? 0); ?>,
+    postTitle: '<?php echo esc_js($post->post_title ?? ''); ?>',
+    elements: <?php echo wp_json_encode(\Jankx\Extensions\JankxUX\Builder\BuilderManager::getCategorizedElements()); ?>
+};
+</script>
+
 <div id="jux-builder-wrapper" class="jux-builder-ui jux-loading">
 
     <!-- Loader Overlay -->
