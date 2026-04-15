@@ -93,6 +93,12 @@ class JankxUXExtension extends AbstractExtension
         if (file_exists($builder_core)) {
             require_once $builder_core;
         }
+        
+        // Also directly init Application for admin/AJAX
+        if ((is_admin() || (defined('DOING_AJAX') && DOING_AJAX)) && 
+            class_exists('\Jankx\Extensions\JankxUX\Builder\Core\Application')) {
+            \Jankx\Extensions\JankxUX\Builder\Core\Application::getInstance();
+        }
     }
 
     public function handle_preview_mode()
