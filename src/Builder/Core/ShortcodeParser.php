@@ -3,6 +3,7 @@ namespace Jankx\Extensions\JankxUX\Builder\Core;
 
 /**
  * Parse shortcode content into builder nodes
+ * Properly handles nested shortcodes by parsing only top-level first
  */
 class ShortcodeParser
 {
@@ -16,49 +17,82 @@ class ShortcodeParser
         }
 
         $nodes = [];
-        $pattern = '/\[(\w+)([^\]]*)\](.*?)\[\/\1\]|\[(\w+)([^\]]*)\]/s';
+        $offset = 0;
+        $length = strlen($content);
 
-        preg_match_all($pattern, $content, $matches, PREG_SET_ORDER);
-
-        foreach ($matches as $match) {
-            $node = self::parseMatch($match);
-            if ($node) {
-                $nodes[] = $node;
+        while ($offset < $length) {
+            // Find next opening bracket
+            $openPos = strpos($content, '[', $offset);
+            
+            if ($openPos === false) {
+                break;
             }
+
+            // Check if this is a closing tag
+            if (isset($content[$openPos + 1]) && $content[$openPos + 1] === '/') {
+                $offset = $openPos + 1;
+                continue;
+            }
+
+            // Find the tag name
+            $closePos = strpos($content, ']', $openPos);
+            if ($closePos === false) {
+                break;
+            }
+
+            $tagContent = substr($content, $openPos + 1, $closePos - $openPos - 1);
+            
+            // Parse tag and attributes
+            $spacePos = strpos($tagContent, ' ');
+            if ($spacePos === false) {
+                $tag = $tagContent;
+                $attsString = '';
+            } else {
+                $tag = substr($tagContent, 0, $spacePos);
+                $attsString = substr($tagContent, $spacePos + 1);
+            }
+
+            // Check if it's self-closing
+            $isSelfClosing = (substr($tag, -1) === '/');
+            if ($isSelfClosing) {
+                $tag = substr($tag, 0, -1);
+                $tag = trim($tag);
+            }
+
+            // Find closing tag for non-self-closing tags
+            if (!$isSelfClosing) {
+                $endTag = '[/' . $tag . ']';
+                $endPos = strpos($content, $endTag, $closePos);
+                
+                if ($endPos === false) {
+                    // No closing tag found, treat as self-closing
+                    $innerContent = '';
+                    $hasClosing = false;
+                } else {
+                    // Extract inner content (might contain nested shortcodes)
+                    $innerContent = substr($content, $closePos + 1, $endPos - $closePos - 1);
+                    $hasClosing = true;
+                    $closePos = $endPos + strlen($endTag) - 1;
+                }
+            } else {
+                $innerContent = '';
+                $hasClosing = false;
+            }
+
+            $node = [
+                'id' => 'jux-' . uniqid(),
+                'tag' => $tag,
+                'name' => self::getElementName($tag),
+                'info' => '',
+                'options' => self::parseAttributes($attsString),
+                'children' => $hasClosing && !empty($innerContent) ? self::parse($innerContent) : null
+            ];
+
+            $nodes[] = $node;
+            $offset = $closePos + 1;
         }
 
         return $nodes;
-    }
-
-    /**
-     * Parse a single shortcode match
-     */
-    protected static function parseMatch($match)
-    {
-        // Self-closing tag: [tag atts]
-        if (!empty($match[4])) {
-            $tag = $match[4];
-            $attsString = $match[5];
-            $innerContent = '';
-            $hasClosing = false;
-        } else {
-            // Enclosing tag: [tag atts]content[/tag]
-            $tag = $match[1];
-            $attsString = $match[2];
-            $innerContent = $match[3] ?? '';
-            $hasClosing = true;
-        }
-
-        $node = [
-            'id' => 'jux-' . uniqid(),
-            'tag' => $tag,
-            'name' => self::getElementName($tag),
-            'info' => '',
-            'options' => self::parseAttributes($attsString),
-            'children' => $hasClosing && $innerContent ? self::parse($innerContent) : null
-        ];
-
-        return $node;
     }
 
     /**

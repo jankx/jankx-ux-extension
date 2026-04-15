@@ -6,7 +6,7 @@ namespace Jankx\Extensions\JankxUX\Builder\Elements;
  */
 class Gap extends AbstractElement
 {
-    public function getTag(): string
+    public static function getTag(): string
     {
         return 'gap';
     }
