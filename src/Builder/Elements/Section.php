@@ -35,8 +35,17 @@ class Section extends AbstractElement
         ];
     }
 
-    public static function render($options, $content = '')
+    public static function render($atts = [], $content = '')
     {
+        $options = shortcode_atts([
+            'padding' => '',
+            'border' => '',
+            'class' => '',
+            'bg_color' => '',
+            'bg' => '',
+            'id' => '',
+        ], $atts);
+
         $classes = ['section'];
         $styles = [];
         $id = !empty($options['id']) ? ' id="' . esc_attr($options['id']) . '"' : '';
@@ -49,7 +58,7 @@ class Section extends AbstractElement
         $html = '<section' . $id . ' class="' . esc_attr(implode(' ', $classes)) . '"';
         if (!empty($options['bg'])) $html .= ' data-bg="' . esc_url($options['bg']) . '"';
         if (!empty($styles)) $html .= ' style="' . esc_attr(implode(' ', $styles)) . '"';
-        $html .= '><div class="section-content">' . $content . '</div></section>';
+        $html .= '><div class="section-content">' . do_shortcode($content) . '</div></section>';
 
         return $html;
     }

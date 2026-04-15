@@ -32,8 +32,16 @@ class Text extends AbstractElement
         ];
     }
 
-    public static function render($options, $content = '')
+    public static function render($atts = [], $content = '')
     {
+        $options = shortcode_atts([
+            'text_align' => '',
+            'font_size' => '',
+            'class' => '',
+            'text_color' => '',
+            'text' => '',
+        ], $atts);
+
         $classes = ['jux-text'];
         $styles = [];
 
@@ -42,7 +50,7 @@ class Text extends AbstractElement
         if (!empty($options['class'])) $classes[] = esc_attr($options['class']);
         if (!empty($options['text_color'])) $styles[] = 'color:' . esc_attr($options['text_color']) . ';';
 
-        $text = !empty($options['text']) ? $options['text'] : '';
+        $text = !empty($options['text']) ? $options['text'] : do_shortcode($content);
 
         $html = '<div class="' . esc_attr(implode(' ', $classes)) . '"';
         if (!empty($styles)) $html .= ' style="' . esc_attr(implode(' ', $styles)) . '"';

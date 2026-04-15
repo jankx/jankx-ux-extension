@@ -34,22 +34,33 @@ class Slider extends AbstractElement
         ];
     }
 
-    public static function render($options, $content = '')
+    public static function render($atts = [], $content = '')
     {
+        $options = shortcode_atts([
+            'class' => '',
+            'timer' => '5000',
+            'auto_slide' => 'true',
+            'bullets' => 'true',
+            'arrows' => 'true',
+            'pause_hover' => 'true',
+            'infinitive' => 'true',
+            'draggable' => 'true',
+        ], $atts);
+
         $classes = ['slider', 'jux-slider'];
         $data = [];
 
         if (!empty($options['class'])) $classes[] = esc_attr($options['class']);
         if (!empty($options['timer'])) $data[] = 'data-timer="' . intval($options['timer']) . '"';
-        if (isset($options['auto_slide']) && $options['auto_slide'] === 'true') $data[] = 'data-auto="true"';
-        if (isset($options['bullets']) && $options['bullets'] === 'true') $data[] = 'data-bullets="true"';
-        if (isset($options['arrows']) && $options['arrows'] === 'true') $data[] = 'data-arrows="true"';
-        if (isset($options['pause_hover']) && $options['pause_hover'] === 'true') $data[] = 'data-pause-hover="true"';
-        if (isset($options['infinitive']) && $options['infinitive'] === 'true') $data[] = 'data-infinite="true"';
-        if (isset($options['draggable']) && $options['draggable'] === 'true') $data[] = 'data-draggable="true"';
+        if ($options['auto_slide'] === 'true') $data[] = 'data-auto="true"';
+        if ($options['bullets'] === 'true') $data[] = 'data-bullets="true"';
+        if ($options['arrows'] === 'true') $data[] = 'data-arrows="true"';
+        if ($options['pause_hover'] === 'true') $data[] = 'data-pause-hover="true"';
+        if ($options['infinitive'] === 'true') $data[] = 'data-infinite="true"';
+        if ($options['draggable'] === 'true') $data[] = 'data-draggable="true"';
 
         $html = '<div class="' . esc_attr(implode(' ', $classes)) . '" ' . implode(' ', $data) . '>';
-        $html .= '<div class="slider-wrapper">' . $content . '</div>';
+        $html .= '<div class="slider-wrapper">' . do_shortcode($content) . '</div>';
         $html .= '</div>';
 
         return $html;

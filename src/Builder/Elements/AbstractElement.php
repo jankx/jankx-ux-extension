@@ -43,6 +43,15 @@ abstract class AbstractElement
 
     /**
      * Render element template
+     * WordPress shortcode compatible: ($atts, $content)
      */
-    abstract public static function render($options, $content = '');
+    abstract public static function render($atts = [], $content = '');
+
+    /**
+     * Parse WordPress atts to element options
+     */
+    protected static function parseAtts($atts, $defaults = [])
+    {
+        return shortcode_atts($defaults, $atts);
+    }
 }

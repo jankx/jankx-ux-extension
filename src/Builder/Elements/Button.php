@@ -36,8 +36,18 @@ class Button extends AbstractElement
         ];
     }
 
-    public static function render($options, $content = '')
+    public static function render($atts = [], $content = '')
     {
+        $options = shortcode_atts([
+            'style' => 'primary',
+            'size' => '',
+            'radius' => '',
+            'class' => '',
+            'text' => 'Button',
+            'link' => '#',
+            'target' => '_self',
+        ], $atts);
+
         $classes = ['button'];
 
         if (!empty($options['style'])) $classes[] = esc_attr($options['style']);
@@ -45,7 +55,7 @@ class Button extends AbstractElement
         if (!empty($options['radius'])) $classes[] = 'is-' . esc_attr($options['radius']);
         if (!empty($options['class'])) $classes[] = esc_attr($options['class']);
 
-        $text = !empty($options['text']) ? esc_html($options['text']) : 'Button';
+        $text = !empty($options['text']) ? esc_html($options['text']) : esc_html($content);
         $link = !empty($options['link']) ? esc_url($options['link']) : '#';
         $target = !empty($options['target']) ? esc_attr($options['target']) : '_self';
 

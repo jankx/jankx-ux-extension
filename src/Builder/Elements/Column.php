@@ -46,23 +46,28 @@ class Column extends AbstractElement
         ];
     }
 
-    public static function render($options, $content = '')
+    public static function render($atts = [], $content = '')
     {
-        $span = isset($options['span']) ? intval($options['span']) : 12;
+        $options = shortcode_atts([
+            'span' => '12',
+            'class' => '',
+        ], $atts);
+
+        $span = intval($options['span']);
         $classes = ['col', 'medium-' . $span];
-        
+
         if (!empty($options['class'])) {
             $classes[] = esc_attr($options['class']);
         }
-        
+
         $classString = implode(' ', $classes);
-        
+
         $html = '<div class="' . esc_attr($classString) . '">';
         $html .= '<div class="col-inner">';
-        $html .= $content;
+        $html .= do_shortcode($content);
         $html .= '</div>';
         $html .= '</div>';
-        
+
         return $html;
     }
 }

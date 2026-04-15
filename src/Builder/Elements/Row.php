@@ -55,28 +55,34 @@ class Row extends AbstractElement
         ];
     }
 
-    public static function render($options, $content = '')
+    public static function render($atts = [], $content = '')
     {
+        $options = shortcode_atts([
+            'style' => 'default',
+            'v_align' => '',
+            'class' => '',
+        ], $atts);
+
         $classes = ['row'];
-        
+
         if (!empty($options['style']) && $options['style'] !== 'default') {
             $classes[] = 'row-' . esc_attr($options['style']);
         }
-        
+
         if (!empty($options['v_align'])) {
             $classes[] = 'row-valign-' . esc_attr($options['v_align']);
         }
-        
+
         if (!empty($options['class'])) {
             $classes[] = esc_attr($options['class']);
         }
-        
+
         $classString = implode(' ', $classes);
-        
+
         $html = '<div class="' . esc_attr($classString) . '">';
-        $html .= $content;
+        $html .= do_shortcode($content);
         $html .= '</div>';
-        
+
         return $html;
     }
 }
