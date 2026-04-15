@@ -7,7 +7,7 @@
         selectedShortcode: null,
         history: [],
         historyIndex: -1,
-        elements: window.JUX_Builder ? window.JUX_Builder.elements : {},
+        elements: (typeof juxBuilderData !== 'undefined' && juxBuilderData.elements) ? juxBuilderData.elements : {},
 
         init: function() {
             this.bindEvents();
@@ -606,13 +606,13 @@
                 $wrapper.removeClass('jux-loading');
             }, 5000);
 
-            // Init hierarchy render from data
-            var data = window.JUX_Builder || {};
-            JUXBuilder.postId = data.post_id || 0;
-            JUXBuilder.postTitle = data.post_title || '';
-            JUXBuilder.elements = data.elements || {};
+            // Init hierarchy render from data (use juxBuilderData from PHP)
+            var data = (typeof juxBuilderData !== 'undefined') ? juxBuilderData : {};
+            JUXBuilder.postId = data.postId || 0;
+            JUXBuilder.postTitle = data.postTitle || '';
+            // elements already set at top
 
-            JUXBuilder.renderHierarchy(data.content_tree || []);
+            JUXBuilder.renderHierarchy(data.contentNodes || []);
         }
     };
 
