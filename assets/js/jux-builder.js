@@ -415,12 +415,13 @@
         // ==========================================
         updatePreview: function() {
             var self = this;
+            
+            // Get data with fallback defaults
             var data = window.juxBuilderData || {};
+            var ajaxUrl = data.ajaxUrl || (window.ajaxurl || '/wp-admin/admin-ajax.php');
+            var nonce = data.nonce || '';
 
-            if (!data.ajaxUrl) {
-                console.error('juxBuilderData.ajaxUrl not set');
-                return;
-            }
+            console.log('updatePreview - ajaxUrl:', ajaxUrl, 'nonce:', nonce ? 'set' : 'empty');
 
             // Build shortcodes array from hierarchy
             var shortcodes = [];
@@ -436,9 +437,9 @@
             console.log('Sending shortcodes for render:', shortcodes);
 
             // AJAX render
-            $.post(data.ajaxUrl, {
+            $.post(ajaxUrl, {
                 action: 'jux_builder_render_preview',
-                nonce: data.nonce,
+                nonce: nonce,
                 shortcodes: shortcodes
             }).done(function(response) {
                 console.log('AJAX response:', response);
