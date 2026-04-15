@@ -423,8 +423,45 @@
         },
 
         getShortcodeContent: function() {
-            // TODO: convert historyNodes to shortcode string
-            return '';
+            var self = this;
+            var content = '';
+            
+            (self.historyNodes || []).forEach(function(node) {
+                content += self.buildShortcodeFromNode(node);
+            });
+            
+            return content;
+        },
+
+        buildShortcodeFromNode: function(node) {
+            var self = this;
+            var tag = node.tag;
+            var atts = [];
+            
+            // Build attributes
+            Object.keys(node.options || {}).forEach(function(key) {
+                if (key === '_jux_id' || key === '_label') return;
+                var val = node.options[key];
+                if (val !== '' && val !== undefined && val !== null) {
+                    atts.push(key + '="' + val + '"');
+                }
+            });
+            
+            // Build content
+            var innerContent = '';
+            if (node.children && node.children.length > 0) {
+                node.children.forEach(function(child) {
+                    innerContent += self.buildShortcodeFromNode(child);
+                });
+            }
+            
+            // Build shortcode
+            var attString = atts.length > 0 ? ' ' + atts.join(' ') : '';
+            if (innerContent) {
+                return '[' + tag + attString + ']' + innerContent + '[/' + tag + ']';
+            } else {
+                return '[' + tag + attString + ']';
+            }
         },
 
         // ==========================================
