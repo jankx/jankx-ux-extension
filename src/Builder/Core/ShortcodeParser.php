@@ -2,13 +2,12 @@
 namespace Jankx\Extensions\JankxUX\Builder\Core;
 
 /**
- * Parse shortcode content into builder nodes
- * Properly handles nested shortcodes by parsing only top-level first
+ * Parse shortcode content into builder nodes using WordPress native regex
  */
 class ShortcodeParser
 {
     /**
-     * Parse content into nodes array
+     * Parse content into nodes array using WordPress get_shortcode_regex
      */
     public static function parse($content)
     {
@@ -16,104 +15,57 @@ class ShortcodeParser
             return [];
         }
 
+        // Use WordPress native shortcode regex
+        $pattern = get_shortcode_regex();
         $nodes = [];
-        $offset = 0;
-        $length = strlen($content);
 
-        while ($offset < $length) {
-            // Find next opening bracket
-            $openPos = strpos($content, '[', $offset);
-            
-            if ($openPos === false) {
-                break;
-            }
-
-            // Check if this is a closing tag
-            if (isset($content[$openPos + 1]) && $content[$openPos + 1] === '/') {
-                $offset = $openPos + 1;
-                continue;
-            }
-
-            // Find the tag name
-            $closePos = strpos($content, ']', $openPos);
-            if ($closePos === false) {
-                break;
-            }
-
-            $tagContent = substr($content, $openPos + 1, $closePos - $openPos - 1);
-            
-            // Parse tag and attributes
-            $spacePos = strpos($tagContent, ' ');
-            if ($spacePos === false) {
-                $tag = $tagContent;
-                $attsString = '';
-            } else {
-                $tag = substr($tagContent, 0, $spacePos);
-                $attsString = substr($tagContent, $spacePos + 1);
-            }
-
-            // Check if it's self-closing
-            $isSelfClosing = (substr($tag, -1) === '/');
-            if ($isSelfClosing) {
-                $tag = substr($tag, 0, -1);
-                $tag = trim($tag);
-            }
-
-            // Find closing tag for non-self-closing tags
-            if (!$isSelfClosing) {
-                $endTag = '[/' . $tag . ']';
-                $endPos = strpos($content, $endTag, $closePos);
-                
-                if ($endPos === false) {
-                    // No closing tag found, treat as self-closing
-                    $innerContent = '';
-                    $hasClosing = false;
-                } else {
-                    // Extract inner content (might contain nested shortcodes)
-                    $innerContent = substr($content, $closePos + 1, $endPos - $closePos - 1);
-                    $hasClosing = true;
-                    $closePos = $endPos + strlen($endTag) - 1;
+        if (preg_match_all('/' . $pattern . '/s', $content, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $node = self::parseMatch($match);
+                if ($node) {
+                    $nodes[] = $node;
                 }
-            } else {
-                $innerContent = '';
-                $hasClosing = false;
             }
-
-            $node = [
-                'id' => 'jux-' . uniqid(),
-                'tag' => $tag,
-                'name' => self::getElementName($tag),
-                'info' => '',
-                'options' => self::parseAttributes($attsString),
-                'children' => $hasClosing && !empty($innerContent) ? self::parse($innerContent) : null
-            ];
-
-            $nodes[] = $node;
-            $offset = $closePos + 1;
         }
 
         return $nodes;
     }
 
     /**
-     * Parse attributes string into array
+     * Parse a single shortcode match from WordPress regex
      */
-    protected static function parseAttributes($attsString)
+    protected static function parseMatch($match)
     {
-        $atts = [];
-        $pattern = '/(\w+)=["\']([^"\']*)["\']|(\w+)=[^\s]*/';
+        // WordPress regex returns:
+        // [0] = full shortcode
+        // [1] = opening bracket [[ or just [
+        // [2] = shortcode name
+        // [3] = attributes
+        // [4] = self-closing slash
+        // [5] = content
+        // [6] = closing bracket ]] or just ]
 
-        preg_match_all($pattern, $attsString, $matches, PREG_SET_ORDER);
+        $tag = $match[2];
+        $attsString = $match[3];
+        $hasClosing = !empty($match[5]);  // has content
+        $content = $match[5] ?? '';
 
-        foreach ($matches as $match) {
-            if (!empty($match[1])) {
-                $atts[$match[1]] = $match[2];
-            } elseif (!empty($match[3])) {
-                $atts[$match[3]] = '';
-            }
+        // Parse attributes using WordPress native function
+        $atts = shortcode_parse_atts($attsString);
+        if (!is_array($atts)) {
+            $atts = [];
         }
 
-        return $atts;
+        $node = [
+            'id' => 'jux-' . uniqid(),
+            'tag' => $tag,
+            'name' => self::getElementName($tag),
+            'info' => '',
+            'options' => $atts,
+            'children' => $hasClosing && !empty($content) ? self::parse($content) : null
+        ];
+
+        return $node;
     }
 
     /**
