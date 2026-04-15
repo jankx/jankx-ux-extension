@@ -49,10 +49,13 @@
             var self = this;
             window.addEventListener('message', function(event) {
                 var data = event.data;
+                console.log('Preview received message:', data);
+
                 if (!data || !data.action) return;
 
                 // Handle rendered HTML from AJAX
                 if (data.action === 'jux-rendered' && data.items) {
+                    console.log('Updating rendered content:', data.items);
                     self.updateRenderedContent(data.items);
                 }
             });

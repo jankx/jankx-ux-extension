@@ -115,24 +115,39 @@ class ElementRegistry
     protected static function loadElementClasses()
     {
         $elementsDir = __DIR__ . '/Elements';
-        
+
         if (!is_dir($elementsDir)) {
+            error_log('JUX Builder: Elements directory not found: ' . $elementsDir);
             return;
         }
 
         // Scan for element classes
         $files = glob($elementsDir . '/*.php');
-        
+
         foreach ($files as $file) {
             $className = basename($file, '.php');
+
+            // Skip AbstractElement
+            if ($className === 'AbstractElement') {
+                continue;
+            }
+
             $fqcn = 'Jankx\\Extensions\\JankxUX\\Builder\\Elements\\' . $className;
-            
+
+            // Require the file first
+            require_once $file;
+
             if (class_exists($fqcn)) {
                 // Call static register method if exists
                 if (method_exists($fqcn, 'register')) {
                     $fqcn::register();
+                    error_log('JUX Builder: Registered element: ' . $className);
                 }
+            } else {
+                error_log('JUX Builder: Class not found: ' . $fqcn);
             }
         }
+
+        error_log('JUX Builder: Total elements registered: ' . self::count());
     }
 }

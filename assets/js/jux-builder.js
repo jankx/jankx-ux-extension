@@ -346,8 +346,12 @@
         // Add element to page
         // ==========================================
         addElement: function(tag) {
-            var el = this.elements[tag];
-            if (!el) return;
+            var self = this;
+            var el = self.elements[tag];
+            if (!el) {
+                console.error('Element not found:', tag);
+                return;
+            }
 
             // Build a new node and add to hierarchy
             var node = {
@@ -356,13 +360,19 @@
                 name: el.name || tag,
                 info: el.info || '',
                 options: {},
-                children: el.type === 'container' ? [] : null
+                children: el.wrap || el.type === 'container' ? [] : null
             };
 
-            this.historyNodes = this.historyNodes || [];
-            this.historyNodes.push(node);
-            this.refreshHierarchy();
-            this.updatePreview();
+            self.historyNodes = self.historyNodes || [];
+            self.historyNodes.push(node);
+            console.log('Added element:', node);
+
+            self.refreshHierarchy();
+
+            // Trigger preview update
+            setTimeout(function() {
+                self.updatePreview();
+            }, 100);
         },
 
         refreshHierarchy: function() {
@@ -407,6 +417,11 @@
             var self = this;
             var data = window.juxBuilderData || {};
 
+            if (!data.ajaxUrl) {
+                console.error('juxBuilderData.ajaxUrl not set');
+                return;
+            }
+
             // Build shortcodes array from hierarchy
             var shortcodes = [];
             (self.historyNodes || []).forEach(function(node) {
@@ -418,15 +433,22 @@
                 });
             });
 
+            console.log('Sending shortcodes for render:', shortcodes);
+
             // AJAX render
-            $.post(data.ajaxUrl || '/wp-admin/admin-ajax.php', {
+            $.post(data.ajaxUrl, {
                 action: 'jux_builder_render_preview',
                 nonce: data.nonce,
                 shortcodes: shortcodes
             }).done(function(response) {
+                console.log('AJAX response:', response);
                 if (response.success && response.data.rendered) {
                     self.updateIframeContent(response.data.rendered);
+                } else {
+                    console.error('AJAX error:', response);
                 }
+            }).fail(function(xhr, status, error) {
+                console.error('AJAX failed:', status, error);
             });
         },
 
