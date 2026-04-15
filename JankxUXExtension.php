@@ -54,18 +54,45 @@ class JankxUXExtension extends AbstractExtension
     {
         self::$instance = $this;
 
+        // Define constants first
+        $this->define_constants();
+
+        // Load Builder Core (UX Builder replacement)
+        $this->load_builder_core();
+
         // Initialize Managers (PSR-4 Pattern)
         TemplateManager::init($this);
         UXBlock::register();
         Header::init();
         BuilderManager::init();
         \Jankx\Extensions\JankxUX\Shortcodes\ShortcodeManager::init();
+    }
 
-        // Boot legacy constants if needed
-        if (!defined('JUX_VERSION')) define('JUX_VERSION', $this->get_version());
-        if (!defined('JUX_PATH')) define('JUX_PATH', $this->get_extension_path());
+    protected function define_constants()
+    {
+        if (!defined('JANKX_UX_VERSION')) {
+            define('JANKX_UX_VERSION', $this->get_version());
+        }
+        if (!defined('JANKX_UX_PATH')) {
+            define('JANKX_UX_PATH', trailingslashit($this->get_extension_path()));
+        }
+        if (!defined('JANKX_UX_URL')) {
+            define('JANKX_UX_URL', trailingslashit($this->get_extension_url()));
+        }
 
-        add_action('template_redirect', [$this, 'handle_preview_mode']);
+        // Legacy compatibility
+        if (!defined('JUX_VERSION')) define('JUX_VERSION', JANKX_UX_VERSION);
+        if (!defined('JUX_PATH')) define('JUX_PATH', JANKX_UX_PATH);
+        if (!defined('JUX_URL')) define('JUX_URL', JANKX_UX_URL);
+    }
+
+    protected function load_builder_core()
+    {
+        // Load Builder Core if available
+        $builder_core = $this->get_extension_path() . '/inc/builder/core/jux-builder.php';
+        if (file_exists($builder_core)) {
+            require_once $builder_core;
+        }
     }
 
     public function handle_preview_mode()
@@ -82,6 +109,7 @@ class JankxUXExtension extends AbstractExtension
     public function register_hooks(): void
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+        add_action('template_redirect', [$this, 'handle_preview_mode']);
         
         if (is_admin()) {
             add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
