@@ -9,6 +9,11 @@
         "class": "Jankx\\Extensions\\JankxUX\\JankxUXExtension",
         "method": "init"
     },
+    "requirements": {
+        "extensions": {
+            "header-presets": "*"
+        }
+    },
     "auto_activate": true,
     "enabled": true
 }
