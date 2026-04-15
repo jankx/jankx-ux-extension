@@ -346,10 +346,12 @@
                 self.savePost();
             });
 
-            // Exit builder
             $('#jux-exit-builder, #jux-sidebar-exit').on('click', function() {
                 if (confirm('Exit builder? Unsaved changes will be lost.')) {
-                    window.location.href = window.location.href.replace(/page=ux-builder.*$/, 'post=' + self.postId + '&action=edit');
+                    var backUrl = (window.juxBuilderData && window.juxBuilderData.backUrl)
+                        ? window.juxBuilderData.backUrl
+                        : '/wp-admin/';
+                    window.location.href = backUrl;
                 }
             });
 

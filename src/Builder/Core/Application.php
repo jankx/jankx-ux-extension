@@ -43,6 +43,16 @@ class Application
     }
 
     /**
+     * Bootstrap the application
+     */
+    public function bootstrap()
+    {
+        $this->registerServices();
+        $this->registerFactories();
+        return $this;
+    }
+
+    /**
      * Register core services
      */
     protected function registerServices()
