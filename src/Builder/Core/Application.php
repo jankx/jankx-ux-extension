@@ -236,12 +236,17 @@ class Application
         $editingPost = $this->container->resolve('editing-post');
         $currentPost = $this->container->resolve('current-post');
 
+        // Parse content into nodes
+        $content = $editingPost->content();
+        $parsedNodes = ShortcodeParser::parse($content);
+
         $data = [
             'postId' => $editingPost->id(),
             'postStatus' => $editingPost->status(),
             'postType' => $editingPost->type(),
             'postTitle' => $editingPost->title(),
-            'postContent' => $editingPost->content(),
+            'postContent' => $content,
+            'contentNodes' => $parsedNodes,
             'permalink' => $editingPost->permalink(),
             'previewUrl' => add_query_arg('jux-preview', 'true', $editingPost->permalink()),
             'backUrl' => admin_url('post.php?post=' . $currentPost->id() . '&action=edit'),
