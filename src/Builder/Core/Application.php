@@ -212,6 +212,9 @@ class Application
      */
     public function enqueueEditorAssets()
     {
+        // Initialize ElementRegistry to load all elements
+        \Jankx\Extensions\JankxUX\Builder\ElementRegistry::init();
+
         $version = $this->version;
         $assetsUrl = JANKX_UX_URL . 'assets/';
 
