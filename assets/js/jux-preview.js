@@ -46,8 +46,44 @@
         },
 
         listenToParent: function() {
+            var self = this;
             window.addEventListener('message', function(event) {
-                // Future communication from builder to preview
+                var data = event.data;
+                if (!data || !data.action) return;
+
+                // Handle rendered HTML from AJAX
+                if (data.action === 'jux-rendered' && data.items) {
+                    self.updateRenderedContent(data.items);
+                }
+            });
+        },
+
+        // Update content with rendered HTML from AJAX
+        updateRenderedContent: function(items) {
+            var self = this;
+            items.forEach(function(item) {
+                var $el = $('[data-jux-id="' + item.id + '"]');
+                if ($el.length) {
+                    // Update existing element
+                    $el.html(item.html);
+                } else {
+                    // Create new element wrapper
+                    var $wrapper = $('<div class="jux-element-wrapper" data-jux-id="' + item.id + '" data-tag="' + item.tag + '">');
+                    $wrapper.html(item.html);
+                    
+                    // Add click handler to select in builder
+                    $wrapper.on('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.parent.postMessage({
+                            action: 'jux-element-click',
+                            id: item.id
+                        }, '*');
+                    });
+
+                    // Append to content area or find appropriate container
+                    $('#jux-builder-content, .entry-content, article, main, body').first().append($wrapper);
+                }
             });
         }
     };

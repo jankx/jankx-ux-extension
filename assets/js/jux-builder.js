@@ -401,15 +401,67 @@
         },
 
         // ==========================================
-        // Update live preview
+        // Update live preview via AJAX (no page reload)
         // ==========================================
         updatePreview: function() {
-            // Reload iframe with updated content
-            // For now we just send a message
+            var self = this;
+            var data = window.juxBuilderData || {};
+
+            // Build shortcodes array from hierarchy
+            var shortcodes = [];
+            (self.historyNodes || []).forEach(function(node) {
+                shortcodes.push({
+                    id: node.id,
+                    tag: node.tag,
+                    atts: node.options || {},
+                    content: node.children ? self.buildContentFromChildren(node.children) : ''
+                });
+            });
+
+            // AJAX render
+            $.post(data.ajaxUrl || '/wp-admin/admin-ajax.php', {
+                action: 'jux_builder_render_preview',
+                nonce: data.nonce,
+                shortcodes: shortcodes
+            }).done(function(response) {
+                if (response.success && response.data.rendered) {
+                    self.updateIframeContent(response.data.rendered);
+                }
+            });
+        },
+
+        // Build nested content from children
+        buildContentFromChildren: function(children) {
+            var self = this;
+            var content = '';
+            (children || []).forEach(function(child) {
+                // Build shortcode string
+                var atts = [];
+                $.each(child.options || {}, function(key, val) {
+                    if (val !== '' && val !== null) {
+                        atts.push(key + '="' + val + '"');
+                    }
+                });
+                var attString = atts.length ? ' ' + atts.join(' ') : '';
+                if (child.children && child.children.length) {
+                    content += '[' + child.tag + attString + ']' + self.buildContentFromChildren(child.children) + '[/' + child.tag + ']';
+                } else {
+                    content += '[' + child.tag + attString + ']';
+                }
+            });
+            return content;
+        },
+
+        // Update iframe content with rendered HTML
+        updateIframeContent: function(renderedItems) {
             var frame = document.getElementById('jux-preview-frame');
-            if (frame && frame.contentWindow) {
-                frame.contentWindow.postMessage({ action: 'jux-refresh', content: this.getShortcodeContent() }, '*');
-            }
+            if (!frame || !frame.contentWindow) return;
+
+            // Send rendered HTML to iframe
+            frame.contentWindow.postMessage({
+                action: 'jux-rendered',
+                items: renderedItems
+            }, '*');
         },
 
         // ==========================================
