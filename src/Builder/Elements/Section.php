@@ -19,6 +19,7 @@ class Section extends AbstractElement
             'description' => __('Full-width content section with background options.', 'jankx'),
             'wrap' => true,
             'options' => [
+                '_label' => ['type' => 'text', 'heading' => __('Element Name', 'jankx'), 'default' => '', 'placeholder' => __('Custom name for this element', 'jankx')],
                 'label' => ['type' => 'text', 'heading' => __('Label', 'jankx'), 'default' => ''],
                 'bg_color' => ['type' => 'color', 'heading' => __('Background Color', 'jankx'), 'default' => ''],
                 'bg' => ['type' => 'image', 'heading' => __('Background Image', 'jankx'), 'default' => ''],

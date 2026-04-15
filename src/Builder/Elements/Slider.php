@@ -19,6 +19,7 @@ class Slider extends AbstractElement
             'description' => __('Image or content slider/carousel.', 'jankx'),
             'wrap' => true,
             'options' => [
+                '_label' => ['type' => 'text', 'heading' => __('Element Name', 'jankx'), 'default' => '', 'placeholder' => __('Custom name for this element', 'jankx')],
                 'timer' => ['type' => 'text', 'heading' => __('Autoplay Timer (ms)', 'jankx'), 'default' => '5000'],
                 'bullets' => ['type' => 'checkbox', 'heading' => __('Show Bullets', 'jankx'), 'default' => 'true'],
                 'arrows' => ['type' => 'checkbox', 'heading' => __('Show Arrows', 'jankx'), 'default' => 'true'],

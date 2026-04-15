@@ -19,6 +19,7 @@ class Button extends AbstractElement
             'description' => __('Call to action button.', 'jankx'),
             'wrap' => false,
             'options' => [
+                '_label' => ['type' => 'text', 'heading' => __('Element Name', 'jankx'), 'default' => '', 'placeholder' => __('Custom name for this element', 'jankx')],
                 'text' => ['type' => 'text', 'heading' => __('Button Text', 'jankx'), 'default' => 'Click Me'],
                 'link' => ['type' => 'text', 'heading' => __('Link', 'jankx'), 'default' => ''],
                 'target' => ['type' => 'select', 'heading' => __('Target', 'jankx'), 'default' => '_self',

@@ -19,6 +19,7 @@ class Text extends AbstractElement
             'description' => __('Simple text content block.', 'jankx'),
             'wrap' => false,
             'options' => [
+                '_label' => ['type' => 'text', 'heading' => __('Element Name', 'jankx'), 'default' => '', 'placeholder' => __('Custom name for this element', 'jankx')],
                 'text' => ['type' => 'textarea', 'heading' => __('Content', 'jankx'), 'default' => 'Enter your text here...'],
                 'text_align' => ['type' => 'select', 'heading' => __('Text Align', 'jankx'), 'default' => '',
                     'options' => ['' => __('Left', 'jankx'), 'center' => __('Center', 'jankx'), 'right' => __('Right', 'jankx')]],

@@ -19,6 +19,12 @@ class Row extends AbstractElement
             'thumbnail' => '',
             'wrap' => true,
             'options' => [
+                '_label' => [
+                    'type' => 'text',
+                    'heading' => __('Element Name', 'jankx'),
+                    'default' => '',
+                    'placeholder' => __('Custom name for this element', 'jankx'),
+                ],
                 'style' => [
                     'type' => 'select',
                     'heading' => __('Row Style', 'jankx'),

@@ -19,6 +19,12 @@ class Column extends AbstractElement
             'thumbnail' => '',
             'wrap' => true,
             'options' => [
+                '_label' => [
+                    'type' => 'text',
+                    'heading' => __('Element Name', 'jankx'),
+                    'default' => '',
+                    'placeholder' => __('Custom name for this element', 'jankx'),
+                ],
                 'span' => [
                     'type' => 'select',
                     'heading' => __('Column Width', 'jankx'),

@@ -98,10 +98,13 @@
 
             var $item = $('<div class="jux-hierarchy-item" data-id="' + node.id + '">');
 
+            // Get display name: _label > name > tag
+            var displayName = (node.options && node.options._label) ? node.options._label : (node.name || node.tag);
+
             var $label = $(
                 '<div class="jux-hierarchy-label">' +
                 (hasChildren ? '<button class="jux-hierarchy-toggle dashicons dashicons-arrow-down-alt2"></button>' : '') +
-                '<span class="jux-hierarchy-name">' + (node.name || node.tag) + '</span>' +
+                '<span class="jux-hierarchy-name">' + displayName + '</span>' +
                 (info ? '<span class="jux-hierarchy-info">' + info + '</span>' : '') +
                 '<button class="dashicons dashicons-admin-generic jux-hierarchy-gear" title="Settings"></button>' +
                 '</div>'
