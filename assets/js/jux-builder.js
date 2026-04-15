@@ -290,7 +290,40 @@
 
             // Apply shortcode options
             $('#jux-apply-shortcode').on('click', function() {
-                // TODO: Collect option values, update content, re-render preview
+                if (!self.selectedShortcode) {
+                    self.goto('home');
+                    return;
+                }
+
+                // Collect option values from form
+                var options = {};
+                $('#jux-shortcode-options').find('input, select, textarea').each(function() {
+                    var $input = $(this);
+                    var name = $input.attr('name');
+                    if (!name) return;
+
+                    var type = $input.attr('type');
+                    if (type === 'checkbox') {
+                        options[name] = $input.is(':checked') ? 'yes' : 'no';
+                    } else if (type === 'number') {
+                        options[name] = $input.val();
+                    } else {
+                        options[name] = $input.val();
+                    }
+                });
+
+                // Update the selected node with new options
+                self.selectedShortcode.options = $.extend({}, self.selectedShortcode.options, options);
+
+                // Update element name if label changed
+                if (options._label) {
+                    self.selectedShortcode.name = options._label;
+                }
+
+                // Refresh hierarchy and preview
+                self.refreshHierarchy();
+                self.updatePreview();
+
                 self.goto('home');
             });
 
