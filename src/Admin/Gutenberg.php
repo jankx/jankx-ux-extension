@@ -13,13 +13,15 @@ class Gutenberg
         global $post;
         if (!$post) return;
 
-        $extension = \Jankx\Extensions\JankxUX\JankxUXExtension::get_instance();
-        
+        // Use WordPress native functions instead of protected extension method
+        $assetsUrl = get_template_directory_uri() . '/extensions/jankx-ux/assets';
+        $version = '1.0.0'; // Or use filemtime for cache busting
+
         wp_enqueue_script(
             'jux-gutenberg-button',
-            $extension->get_assets_url() . '/js/jux-gutenberg.js',
+            $assetsUrl . '/js/jux-gutenberg.js',
             ['wp-edit-post', 'wp-dom-ready', 'wp-element', 'wp-i18n', 'wp-plugins', 'wp-components', 'wp-data', 'wp-compose'],
-            $extension->get_version(),
+            $version,
             true
         );
 
