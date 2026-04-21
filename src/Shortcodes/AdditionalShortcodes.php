@@ -457,3 +457,145 @@ if (!function_exists('jankx_accordion_item_shortcode')) {
     }
     add_shortcode('accordion-item', 'jankx_accordion_item_shortcode');
 }
+
+// =============================================
+// [share] - Social share buttons
+// =============================================
+if (!function_exists('jankx_share_shortcode')) {
+    function jankx_share_shortcode($atts) {
+        extract(shortcode_atts([
+            'title' => '',
+            'class' => '',
+            'style' => 'outline', // plain, small, outline, fill
+        ], $atts));
+
+        $url = get_permalink();
+        $title_text = get_the_title();
+
+        $classes = ['social-icons', 'share-icons', 'relative'];
+        if ($class) $classes[] = $class;
+        if ($style) $classes[] = 'icon-style-' . $style;
+
+        ob_start();
+        ?>
+        <div class="<?php echo esc_attr(implode(' ', $classes)); ?>">
+            <?php if ($title) : ?><span class="share-title uppercase"><?php echo esc_html($title); ?></span><?php endif; ?>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $url; ?>" target="_blank" class="icon button circle is-outline facebook" title="Share on Facebook"><i class="icon-facebook"></i></a>
+            <a href="https://twitter.com/share?url=<?php echo $url; ?>&text=<?php echo $title_text; ?>" target="_blank" class="icon button circle is-outline twitter" title="Share on Twitter"><i class="icon-twitter"></i></a>
+            <a href="mailto:?subject=<?php echo $title_text; ?>&body=<?php echo $url; ?>" class="icon button circle is-outline email" title="Email to a Friend"><i class="icon-envelop"></i></a>
+            <a href="https://pinterest.com/pin/create/button/?url=<?php echo $url; ?>&description=<?php echo $title_text; ?>" target="_blank" class="icon button circle is-outline pinterest" title="Pin on Pinterest"><i class="icon-pinterest"></i></a>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+    add_shortcode('share', 'jankx_share_shortcode');
+}
+
+// =============================================
+// [follow] - Social follow buttons
+// =============================================
+if (!function_exists('jankx_follow_shortcode')) {
+    function jankx_follow_shortcode($atts) {
+        $atts = shortcode_atts([
+            'facebook' => '', 'twitter' => '', 'instagram' => '', 'youtube' => '', 'pinterest' => '', 'email' => '',
+            'class' => '', 'style' => 'outline', 'size' => '',
+        ], $atts);
+
+        $classes = ['social-icons', 'follow-icons'];
+        if ($atts['class']) $classes[] = $atts['class'];
+        if ($atts['style']) $classes[] = 'icon-style-' . $atts['style'];
+        if ($atts['size']) $classes[] = 'is-' . $atts['size'];
+
+        $output = '<div class="' . esc_attr(implode(' ', $classes)) . '">';
+        foreach (['facebook', 'twitter', 'instagram', 'youtube', 'pinterest', 'email'] as $network) {
+            if ($atts[$network]) {
+                $icon = ($network === 'email') ? 'icon-envelop' : 'icon-' . $network;
+                $output .= '<a href="' . esc_url($atts[$network]) . '" target="_blank" class="icon button circle is-outline ' . $network . '"><i class="'. $icon .'"></i></a>';
+            }
+        }
+        $output .= '</div>';
+        return $output;
+    }
+    add_shortcode('follow', 'jankx_follow_shortcode');
+}
+
+// =============================================
+// [testimonial] - Testimonial block
+// =============================================
+if (!function_exists('jankx_testimonial_shortcode')) {
+    function jankx_testimonial_shortcode($atts, $content = '') {
+        extract(shortcode_atts([
+            'name' => '', 'title' => '', 'image' => '', 'image_width' => '60', 'stars' => '5',
+        ], $atts));
+
+        $stars_html = str_repeat('<i class="icon-star"></i>', intval($stars));
+
+        return '<div class="testimonial-box flex-row align-top">'
+            . '<div class="flex-col post-item-image">'
+            . ($image ? '<div class="testimonial-image circle" style="width:'.intval($image_width).'px">'.wp_get_attachment_image($image, 'thumbnail').'</div>' : '')
+            . '</div>'
+            . '<div class="flex-col flex-grow">'
+            . '<div class="testimonial-text mb-half">' . do_shortcode($content) . '</div>'
+            . '<div class="testimonial-meta uppercase"><strong>' . esc_html($name) . '</strong>' . ($title ? ' / <span>' . esc_html($title) . '</span>' : '') . '</div>'
+            . '<div class="star-rating">' . $stars_html . '</div>'
+            . '</div>'
+            . '</div>';
+    }
+    add_shortcode('testimonial', 'jankx_testimonial_shortcode');
+}
+
+// =============================================
+// [ux_countdown] - Countdown timer
+// =============================================
+if (!function_exists('jankx_ux_countdown_shortcode')) {
+    function jankx_ux_countdown_shortcode($atts) {
+        $atts = shortcode_atts(['year' => '2025', 'month' => '12', 'day' => '31', 'time' => '00:00', 'class' => ''], $atts);
+        $date = "{$atts['year']}-{$atts['month']}-{$atts['day']} {$atts['time']}";
+        return '<div class="ux-countdown ' . esc_attr($atts['class']) . '" data-date="' . esc_attr($date) . '">'
+            . '<div class="ux-countdown-inner flex-row">Phần này yêu cầu JS của Flatsome để chạy...</div>'
+            . '</div>';
+    }
+    add_shortcode('ux_countdown', 'jankx_ux_countdown_shortcode');
+}
+
+// =============================================
+// [ux_current_year] - Current year utility
+// =============================================
+add_shortcode('ux_current_year', function() { return date('Y'); });
+
+// =============================================
+// [site_url] - Site URL utility
+// =============================================
+add_shortcode('site_url', function() { return site_url(); });
+add_shortcode('site_url_secure', function() { return site_url('', 'https'); });
+
+// =============================================
+// [ux_menu] - Custom WP Menu shortcode
+// =============================================
+if (!function_exists('jankx_ux_menu_shortcode')) {
+    function jankx_ux_menu_shortcode($atts) {
+        extract(shortcode_atts([
+            'nav_id'     => '',
+            'class'      => '',
+            'divider'    => '', // line, pipe
+            'align'      => 'left',
+            'icon_size'  => '16',
+        ], $atts));
+
+        if (empty($nav_id)) return '';
+
+        $classes = ['ux-menu', 'nav'];
+        if ($class)   $classes[] = $class;
+        if ($divider) $classes[] = 'nav-divider-' . $divider;
+        if ($align)   $classes[] = 'nav-' . $align;
+
+        return wp_nav_menu([
+            'menu'        => $nav_id,
+            'container'   => false,
+            'menu_class'  => implode(' ', $classes),
+            'echo'        => false,
+            'fallback_cb' => false,
+        ]);
+    }
+    add_shortcode('ux_menu', 'jankx_ux_menu_shortcode');
+}

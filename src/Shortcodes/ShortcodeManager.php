@@ -38,6 +38,15 @@ class ShortcodeManager
         'gap'            => Elements\Gap::class,
         'ux_slider'      => Elements\Slider::class,
         'ux_image'       => Elements\Image::class,
+        'blog_posts'     => Elements\BlogPosts::class,
+        'featured_box'   => Elements\FeaturedBox::class,
+        'ux_image_box'   => Elements\ImageBox::class,
+        'team_member'    => Elements\TeamMember::class,
+        'ux_stack'       => Elements\Stack::class,
+        'ux_text'        => Elements\UXText::class,
+        'ux_gallery'     => Elements\Gallery::class,
+        'ux_price_table' => Elements\PriceTable::class,
+        'ux_hotspot'     => Elements\Hotspot::class,
     ];
 
     public static function init()
