@@ -2,60 +2,62 @@
 namespace Jankx\Extensions\JankxUX\Builder\Elements;
 
 /**
- * Gap/Spacer element (Flatsome gap compatible)
+ * Gap Element - [gap] shortcode
+ * Full parity with Flatsome's flatsome_gap_shortcode() function
  */
 class Gap extends AbstractElement
 {
-    public static function getTag(): string
-    {
-        return 'gap';
-    }
+    protected static $tag = 'gap';
 
-    public function getName(): string
-    {
-        return __('Gap', 'jankx');
-    }
-
-    public function getInfo(): string
-    {
-        return __('Add vertical spacing between elements', 'jankx');
-    }
-
-    public function getIcon(): string
-    {
-        return 'minus';
-    }
-
-    public function getOptions(): array
+    protected static function getConfig()
     {
         return [
-            'height' => [
-                'type' => 'text',
-                'label' => __('Height', 'jankx'),
-                'default' => '30px',
-                'help' => __('Gap height, e.g., 30px or 5vh', 'jankx')
-            ],
-            '_label' => [
-                'type' => 'text',
-                'label' => __('Label', 'jankx'),
-                'default' => ''
-            ]
+            'type'        => 'element',
+            'name'        => 'Gap',
+            'title'       => __('Gap', 'jankx'),
+            'category'    => __('Layout', 'jankx'),
+            'description' => __('Add vertical spacing between elements.', 'jankx'),
+            'wrap'        => false,
+            'options'     => [],
         ];
     }
 
-    public function getType(): string
+    public static function render($atts = [], $content = '')
     {
-        return 'single';
-    }
+        $atts = shortcode_atts([
+            '_id'        => 'gap-' . rand(),
+            'height'     => '30px',
+            'height__sm' => '',
+            'height__md' => '',
+            'class'      => '',
+            'visibility' => '',
+        ], $atts);
 
-    public function getCategory(): string
-    {
-        return 'layout';
-    }
+        extract($atts);
 
-    public static function render($options = [], $content = ''): string
-    {
-        $height = !empty($options['height']) ? esc_attr($options['height']) : '30px';
-        return '<div class="gap-element" style="display:block; height:auto; padding-top:' . $height . ';"></div>';
+        $classes = ['gap-element', 'clearfix'];
+        if ($class)      $classes[] = $class;
+        if ($visibility) $classes[] = $visibility;
+
+        $class_str = implode(' ', $classes);
+
+        // Build pad-top style
+        $style = 'display:block; height:auto; padding-top:' . esc_attr($height) . ';';
+
+        // Responsive overrides via <style>
+        $responsive_css = '';
+        if ($height__md) {
+            $responsive_css .= '@media (max-width:960px) { #' . esc_attr($_id) . ' { padding-top:' . esc_attr($height__md) . '!important; } }';
+        }
+        if ($height__sm) {
+            $responsive_css .= '@media (max-width:640px) { #' . esc_attr($_id) . ' { padding-top:' . esc_attr($height__sm) . '!important; } }';
+        }
+
+        $output = '<div id="' . esc_attr($_id) . '" class="' . esc_attr($class_str) . '" style="' . $style . '"></div>';
+        if ($responsive_css) {
+            $output .= '<style>' . $responsive_css . '</style>';
+        }
+
+        return $output;
     }
 }

@@ -13,8 +13,8 @@ abstract class AbstractElement
     protected static $config = [];
 
     /**
-     * Get element configuration
-     * Override in child class
+     * Get element configuration.
+     * Override in child class.
      */
     protected static function getConfig()
     {
@@ -22,37 +22,38 @@ abstract class AbstractElement
     }
 
     /**
-     * Get element tag
+     * Get element shortcode tag.
+     * Override in child class or set $tag property.
      */
-    protected static function getTag()
+    public static function getTag(): string
     {
-        if (empty(static::$tag)) {
-            // Auto-generate tag from class name
-            $class = new \ReflectionClass(static::class);
-            return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $class->getShortName()));
+        if (!empty(static::$tag)) {
+            return static::$tag;
         }
-        return static::$tag;
+        // Auto-generate tag from class name (PascalCase → snake_case)
+        $class = new \ReflectionClass(static::class);
+        return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $class->getShortName()));
     }
 
     /**
-     * Register this element
+     * Register this element with ElementRegistry.
      */
     public static function register()
     {
         $config = static::getConfig();
-        $tag = static::getTag();
-        
+        $tag    = static::getTag();
+
         ElementRegistry::register($tag, $config);
     }
 
     /**
-     * Render element template
-     * WordPress shortcode compatible: ($atts, $content)
+     * Render element - WordPress shortcode compatible: ($atts, $content)
+     * Must be implemented in all child classes.
      */
     abstract public static function render($atts = [], $content = '');
 
     /**
-     * Parse WordPress atts to element options
+     * Parse WordPress atts to element options using shortcode_atts().
      */
     protected static function parseAtts($atts, $defaults = [])
     {

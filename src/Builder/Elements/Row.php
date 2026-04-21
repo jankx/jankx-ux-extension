@@ -2,7 +2,8 @@
 namespace Jankx\Extensions\JankxUX\Builder\Elements;
 
 /**
- * Row Element - PSR-4 Static Class
+ * Row Element - [row] / [row_inner] shortcode
+ * Full parity with Flatsome's ux_row() function
  */
 class Row extends AbstractElement
 {
@@ -11,118 +12,84 @@ class Row extends AbstractElement
     protected static function getConfig()
     {
         return [
-            'type' => 'container',
-            'name' => 'Row',
-            'title' => __('Row', 'jankx'),
-            'category' => __('Layout', 'jankx'),
+            'type'        => 'container',
+            'name'        => 'Row',
+            'title'       => __('Row', 'jankx'),
+            'category'    => __('Layout', 'jankx'),
             'description' => __('Create a row container for columns.', 'jankx'),
-            'thumbnail' => '',
-            'wrap' => true,
-            'options' => [
-                '_label' => [
-                    'type' => 'text',
-                    'heading' => __('Element Name', 'jankx'),
-                    'default' => '',
-                    'placeholder' => __('Custom name for this element', 'jankx'),
-                ],
-                'style' => [
-                    'type' => 'select',
-                    'heading' => __('Row Style', 'jankx'),
-                    'default' => 'default',
-                    'options' => [
-                        'default' => __('Default', 'jankx'),
-                        'full' => __('Full Width', 'jankx'),
-                        'collapse' => __('Collapse', 'jankx'),
-                    ],
-                ],
-                'v_align' => [
-                    'type' => 'select',
-                    'heading' => __('Vertical Align', 'jankx'),
-                    'default' => '',
-                    'options' => [
-                        '' => __('Top', 'jankx'),
-                        'middle' => __('Middle', 'jankx'),
-                        'bottom' => __('Bottom', 'jankx'),
-                    ],
-                ],
-                'class' => [
-                    'type' => 'text',
-                    'heading' => __('Custom Class', 'jankx'),
-                    'default' => '',
-                ],
-            ],
-            'presets' => [
-                'default' => [
-                    'title' => __('Default Row', 'jankx'),
-                    'options' => [],
-                ],
-            ],
-            'allow_in' => ['section', 'ux_block'],
+            'wrap'        => true,
+            'options'     => [],
+            'allow_in'    => ['section', 'ux_block'],
         ];
     }
 
     public static function render($atts = [], $content = '')
     {
-        // Parse atts - match Flatsome exactly
-        $options = shortcode_atts([
-            '_id' => 'row-' . rand(),
-            '_jux_id' => '',
-            'style' => '',
-            'col_style' => '',
-            'label' => '',
+        $atts = shortcode_atts([
+            '_id'          => 'row-' . rand(),
+            'style'        => '',
+            'col_style'    => '',
+            'label'        => '',
             'border_color' => '',
-            'width' => '',
+            'width'        => '',
             'custom_width' => '',
-            'class' => '',
-            'visibility' => '',
-            'v_align' => '',
-            'h_align' => '',
-            'depth' => '',
-            'depth_hover' => '',
-            'padding' => '',
-            'col_bg' => '',
+            'class'        => '',
+            'visibility'   => '',
+            'v_align'      => '',
+            'h_align'      => '',
+            'depth'        => '',
+            'depth_hover'  => '',
+            // Paddings
+            'padding'      => '',
+            'col_bg'       => '',
             'col_bg_radius' => '',
         ], $atts);
 
-        // Hide if visibility is hidden
-        if ($options['visibility'] === 'hidden') return '';
+        extract($atts);
+
+        // Stop if visibility is hidden
+        if ($visibility === 'hidden') return '';
 
         $classes = ['row'];
 
-        // Add Row style
-        if (!empty($options['style'])) $classes[] = 'row-' . esc_attr($options['style']);
+        if ($style)                      $classes[] = 'row-' . $style;
+        if ($width === 'full-width')     $classes[] = 'row-full-width';
+        if ($v_align)                    $classes[] = 'align-' . $v_align;
+        if ($h_align)                    $classes[] = 'align-' . $h_align;
+        if ($col_style)                  $classes[] = 'row-' . $col_style;
+        if ($class)                      $classes[] = $class;
+        if ($visibility)                 $classes[] = $visibility;
+        if ($depth)                      $classes[] = 'row-box-shadow-' . $depth;
+        if ($depth_hover)                $classes[] = 'row-box-shadow-' . $depth_hover . '-hover';
 
-        // Add Row Width
-        if ($options['width'] === 'full-width') $classes[] = 'row-full-width';
-
-        // Column Vertical Align - Flatsome uses 'align-{val}'
-        if (!empty($options['v_align'])) $classes[] = 'align-' . esc_attr($options['v_align']);
-
-        // Column Horizontal Align
-        if (!empty($options['h_align'])) $classes[] = 'align-' . esc_attr($options['h_align']);
-
-        // Column style
-        if (!empty($options['col_style'])) $classes[] = 'row-' . esc_attr($options['col_style']);
-
-        // Custom Class & Visibility
-        if (!empty($options['class'])) $classes[] = esc_attr($options['class']);
-        if (!empty($options['visibility'])) $classes[] = esc_attr($options['visibility']);
-
-        // Depth - Flatsome uses 'row-box-shadow-{n}'
-        if (!empty($options['depth'])) $classes[] = 'row-box-shadow-' . intval($options['depth']);
-        if (!empty($options['depth_hover'])) $classes[] = 'row-box-shadow-' . intval($options['depth_hover']) . '-hover';
-
-        // Custom Width style
+        // Custom width style attr
         $custom_width_attr = '';
-        if ($options['width'] === 'custom' && !empty($options['custom_width'])) {
-            $custom_width_attr = 'style="max-width:' . esc_attr($options['custom_width']) . '"';
+        if ($width === 'custom' && $custom_width) {
+            $custom_width_attr = ' style="max-width:' . esc_attr($custom_width) . '"';
         }
 
-        $classString = implode(' ', $classes);
-        $id = esc_attr($options['_id']);
+        $class_str = implode(' ', $classes);
+        $id        = esc_attr($_id);
 
-        return '<div class="' . esc_attr($classString) . '" ' . $custom_width_attr . ' id="' . $id . '">'
-            . do_shortcode($content)
-            . '</div>';
+        // Inline CSS for col padding/bg applied via <style>
+        $col_css = '';
+        if ($padding) {
+            $col_css .= '#' . $id . ' > .col > .col-inner { padding:' . esc_attr($padding) . '; }';
+        }
+        if ($col_bg) {
+            $col_css .= '#' . $id . ' > .col > .col-inner { background-color:' . esc_attr($col_bg) . '; }';
+        }
+        if ($col_bg_radius) {
+            $col_css .= '#' . $id . ' > .col > .col-inner { border-radius:' . intval($col_bg_radius) . 'px; }';
+        }
+
+        $output  = '<div class="' . esc_attr($class_str) . '"' . $custom_width_attr . ' id="' . $id . '">';
+        $output .= do_shortcode($content);
+        $output .= '</div>';
+        if ($col_css) {
+            $output .= '<style>' . $col_css . '</style>';
+        }
+
+        return $output;
     }
 }

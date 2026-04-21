@@ -3,7 +3,7 @@ namespace Jankx\Extensions\JankxUX\Builder\Elements;
 
 /**
  * Slider Element - [ux_slider] shortcode
- * Flatsome compatible
+ * Full parity with Flatsome's shortcode_ux_slider() function (Flickity-based)
  */
 class Slider extends AbstractElement
 {
@@ -12,60 +12,129 @@ class Slider extends AbstractElement
     protected static function getConfig()
     {
         return [
-            'type' => 'container',
-            'name' => 'Slider',
-            'title' => __('Slider', 'jankx'),
-            'category' => __('Content', 'jankx'),
-            'description' => __('Image or content slider/carousel.', 'jankx'),
-            'wrap' => true,
-            'options' => [
-                '_label' => ['type' => 'text', 'heading' => __('Element Name', 'jankx'), 'default' => '', 'placeholder' => __('Custom name for this element', 'jankx')],
-                'timer' => ['type' => 'text', 'heading' => __('Autoplay Timer (ms)', 'jankx'), 'default' => '5000'],
-                'bullets' => ['type' => 'checkbox', 'heading' => __('Show Bullets', 'jankx'), 'default' => 'true'],
-                'arrows' => ['type' => 'checkbox', 'heading' => __('Show Arrows', 'jankx'), 'default' => 'true'],
-                'auto_slide' => ['type' => 'checkbox', 'heading' => __('Auto Slide', 'jankx'), 'default' => 'true'],
-                'pause_hover' => ['type' => 'checkbox', 'heading' => __('Pause on Hover', 'jankx'), 'default' => 'true'],
-                'slide_width' => ['type' => 'text', 'heading' => __('Slide Width', 'jankx'), 'default' => ''],
-                'infinitive' => ['type' => 'checkbox', 'heading' => __('Infinite Loop', 'jankx'), 'default' => 'true'],
-                'draggable' => ['type' => 'checkbox', 'heading' => __('Draggable', 'jankx'), 'default' => 'true'],
-                'class' => ['type' => 'text', 'heading' => __('Custom Class', 'jankx'), 'default' => ''],
-            ],
-            'presets' => [],
-            'allow_in' => ['col', 'section', 'ux_block'],
+            'type'        => 'container',
+            'name'        => 'Slider',
+            'title'       => __('Slider', 'jankx'),
+            'category'    => __('Content', 'jankx'),
+            'description' => __('Image or content slider/carousel (Flickity).', 'jankx'),
+            'wrap'        => true,
+            'options'     => [],
         ];
     }
 
     public static function render($atts = [], $content = '')
     {
-        // Parse atts and ignore _jux_id (builder tracking only)
-        $options = shortcode_atts([
-            '_jux_id' => '',
-            'class' => '',
-            'timer' => '5000',
-            'auto_slide' => 'true',
-            'bullets' => 'true',
-            'arrows' => 'true',
-            'pause_hover' => 'true',
-            'infinitive' => 'true',
-            'draggable' => 'true',
+        $atts = shortcode_atts([
+            '_id'                => 'slider-' . rand(),
+            'timer'              => '6000',
+            'bullets'            => 'true',
+            'visibility'         => '',
+            'class'              => '',
+            'type'               => 'slide',
+            'bullet_style'       => '',
+            'auto_slide'         => 'true',
+            'auto_height'        => 'true',
+            'bg_color'           => '',
+            'slide_align'        => 'center',
+            'style'              => 'normal',
+            'slide_width'        => '',
+            'slide_width__md'    => null,
+            'slide_width__sm'    => null,
+            'arrows'             => 'true',
+            'pause_hover'        => 'true',
+            'hide_nav'           => '',
+            'nav_style'          => 'circle',
+            'nav_color'          => 'light',
+            'nav_size'           => 'large',
+            'nav_pos'            => '',
+            'infinitive'         => 'true',
+            'freescroll'         => 'false',
+            'parallax'           => '0',
+            'margin'             => '',
+            'margin__md'         => '',
+            'margin__sm'         => '',
+            'columns'            => '1',
+            'height'             => '',
+            'rtl'                => 'false',
+            'draggable'          => 'true',
+            'friction'           => '0.6',
+            'selectedattraction' => '0.1',
+            'threshold'          => '10',
+            // Deprecated
+            'mobile'             => 'true',
         ], $atts);
 
-        $classes = ['slider', 'jux-slider'];
-        $data = [];
+        extract($atts);
 
-        if (!empty($options['class'])) $classes[] = esc_attr($options['class']);
-        if (!empty($options['timer'])) $data[] = 'data-timer="' . intval($options['timer']) . '"';
-        if ($options['auto_slide'] === 'true') $data[] = 'data-auto="true"';
-        if ($options['bullets'] === 'true') $data[] = 'data-bullets="true"';
-        if ($options['arrows'] === 'true') $data[] = 'data-arrows="true"';
-        if ($options['pause_hover'] === 'true') $data[] = 'data-pause-hover="true"';
-        if ($options['infinitive'] === 'true') $data[] = 'data-infinite="true"';
-        if ($options['draggable'] === 'true') $data[] = 'data-draggable="true"';
+        // Stop if visibility is hidden
+        if ($visibility === 'hidden') return '';
+        if ($mobile !== 'true' && !$visibility) { $visibility = 'hide-for-small'; }
 
-        $html = '<div class="' . esc_attr(implode(' ', $classes)) . '" ' . implode(' ', $data) . '>';
-        $html .= '<div class="slider-wrapper">' . do_shortcode($content) . '</div>';
-        $html .= '</div>';
+        // Wrapper classes
+        $wrapper_classes = ['slider-wrapper', 'relative'];
+        if ($class)      $wrapper_classes[] = $class;
+        if ($visibility) $wrapper_classes[] = $visibility;
+        $wrapper_class_str = implode(' ', $wrapper_classes);
 
-        return $html;
+        // Slider classes
+        $slider_classes = ['slider'];
+        if ($type === 'fade')  $slider_classes[] = 'slider-type-' . $type;
+        if ($bullet_style)     $slider_classes[] = 'slider-nav-dots-' . $bullet_style;
+        if ($nav_style)        $slider_classes[] = 'slider-nav-' . $nav_style;
+        if ($nav_size)         $slider_classes[] = 'slider-nav-' . $nav_size;
+        if ($nav_color)        $slider_classes[] = 'slider-nav-' . $nav_color;
+        if ($nav_pos)          $slider_classes[] = 'slider-nav-' . $nav_pos;
+        if ($style)            $slider_classes[] = 'slider-style-' . $style;
+        if ($hide_nav === 'true') $slider_classes[] = 'slider-show-nav';
+        $slider_class_str = implode(' ', $slider_classes);
+
+        // Auto slide value
+        $auto_slide_val = ($auto_slide === 'true') ? $timer : 'false';
+
+        // Nav flags
+        $is_arrows  = ($arrows  === 'false') ? 'false' : 'true';
+        $is_bullets = ($bullets === 'false') ? 'false' : 'true';
+
+        if (is_rtl()) $rtl = 'true';
+
+        // Wrapper inline styles
+        $wrapper_style = '';
+        if ($bg_color) {
+            $wrapper_style = ' style="background-color:' . esc_attr($bg_color) . '"';
+        }
+
+        // Flickity options JSON
+        $flickity = json_encode([
+            'cellAlign'             => $slide_align,
+            'imagesLoaded'          => true,
+            'lazyLoad'              => 1,
+            'freeScroll'            => $freescroll === 'true',
+            'wrapAround'            => $infinitive === 'true',
+            'autoPlay'              => ($auto_slide_val === 'false') ? false : intval($auto_slide_val),
+            'pauseAutoPlayOnHover'  => $pause_hover === 'true',
+            'prevNextButtons'       => $is_arrows === 'true',
+            'contain'               => true,
+            'adaptiveHeight'        => $auto_height === 'true',
+            'dragThreshold'         => intval($threshold),
+            'percentPosition'       => true,
+            'pageDots'              => $is_bullets === 'true',
+            'rightToLeft'           => $rtl === 'true',
+            'draggable'             => $draggable === 'true',
+            'selectedAttraction'    => floatval($selectedattraction),
+            'parallax'              => intval($parallax),
+            'friction'              => floatval($friction),
+        ]);
+
+        ob_start();
+        ?>
+        <div class="<?php echo esc_attr($wrapper_class_str); ?>" id="<?php echo esc_attr($_id); ?>"<?php echo $wrapper_style; ?>>
+            <div class="<?php echo esc_attr($slider_class_str); ?>"
+                 data-flickity-options='<?php echo esc_attr($flickity); ?>'>
+                <?php echo do_shortcode($content); ?>
+            </div>
+            <div class="loading-spin dark large centered"></div>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 }

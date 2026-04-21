@@ -7,20 +7,37 @@ use Jankx\Extensions\JankxUX\Shortcodes\WooCommerce;
 
 /**
  * Shortcode Manager - Registers all Flatsome-compatible shortcodes
- * PSR-4 with Builder Elements
+ * Full parity with Flatsome shortcode set
  */
 class ShortcodeManager
 {
     /**
      * Map of shortcode tags to Element classes
+     * Matches Flatsome's add_shortcode() registrations exactly
      */
     protected static $elementMap = [
-        'row'       => Elements\Row::class,
-        'col'       => Elements\Column::class,
-        'section'   => Elements\Section::class,
-        'text'      => Elements\Text::class,
-        'button'    => Elements\Button::class,
-        'ux_slider' => Elements\Slider::class,
+        // Layout
+        'row'            => Elements\Row::class,
+        'row_inner'      => Elements\Row::class,
+        'row_inner_1'    => Elements\Row::class,
+        'row_inner_2'    => Elements\Row::class,
+        'col'            => Elements\Column::class,
+        'col_inner'      => Elements\Column::class,
+        'col_inner_1'    => Elements\Column::class,
+        'col_inner_2'    => Elements\Column::class,
+        'section'        => Elements\Section::class,
+        'section_inner'  => Elements\Section::class,
+        'ux_section'     => Elements\Section::class,
+        'background'     => Elements\Section::class,
+
+        // Content builders
+        'ux_banner'      => Elements\Banner::class,
+        'text_box'       => Elements\TextBox::class,
+        'text'           => Elements\Text::class,
+        'button'         => Elements\Button::class,
+        'gap'            => Elements\Gap::class,
+        'ux_slider'      => Elements\Slider::class,
+        'ux_image'       => Elements\Image::class,
     ];
 
     public static function init()
@@ -30,8 +47,11 @@ class ShortcodeManager
             add_shortcode($tag, [$class, 'render']);
         }
 
-        // Register additional shortcodes
-        self::registerLegacyShortcodes();
+        // Load additional shortcodes (ux_html, ux_video, divider, title, tab, etc.)
+        require_once __DIR__ . '/AdditionalShortcodes.php';
+
+        // Register additional standalone shortcodes
+        self::registerStandaloneShortcodes();
 
         // Initialize WooCommerce shortcodes if available
         if (class_exists('WooCommerce')) {
@@ -40,18 +60,35 @@ class ShortcodeManager
     }
 
     /**
-     * Register legacy/alias shortcodes for full Flatsome compatibility
+     * Register shortcodes that are implemented as standalone functions
+     * (not yet migrated to PSR-4 Element classes)
      */
-    protected static function registerLegacyShortcodes()
+    protected static function registerStandaloneShortcodes()
     {
-        // Aliases for Flatsome compatibility
-        $aliases = [
-            'ux_section' => Elements\Section::class,
-        ];
-
-        foreach ($aliases as $tag => $class) {
-            add_shortcode($tag, [$class, 'render']);
+        // video_button - Flatsome alias
+        if (!shortcode_exists('video_button')) {
+            add_shortcode('video_button', [__CLASS__, 'renderVideoButton']);
         }
+    }
+
+    /**
+     * Simple video button shortcode [video_button]
+     */
+    public static function renderVideoButton($atts, $content = '')
+    {
+        $atts = shortcode_atts([
+            'video' => '',
+            'size'  => '',
+        ], $atts);
+
+        $wrapper_style = $atts['size'] ? ' style="font-size:' . esc_attr($atts['size']) . '%"' : '';
+        $href          = $atts['video'] ? esc_url($atts['video']) : '#';
+
+        return '<div class="video-button-wrapper"' . $wrapper_style . '>'
+            . '<a href="' . $href . '" class="button open-video icon circle is-outline is-xlarge" role="button" aria-label="' . esc_attr__('Open video in lightbox', 'jankx') . '">'
+            . '<i class="icon-play"></i>'
+            . '</a>'
+            . '</div>';
     }
 
     /**
@@ -63,7 +100,6 @@ class ShortcodeManager
             $class = self::$elementMap[$tag];
             return $class::render($atts, $content);
         }
-
         return $content;
     }
 
