@@ -76,6 +76,14 @@ class BuilderApp extends Backbone.View<Backbone.Model, HTMLElement> {
     private _showView(view: SidebarView) {
         jQuery('.jux-sidebar-view').hide();
         jQuery(`#jux-view-${view}`).show();
+
+        // Hide global header when in element settings or other sub-views
+        if (view === 'home' || view === 'settings') {
+            jQuery('.jux-sidebar-title-row').show();
+        } else {
+            jQuery('.jux-sidebar-title-row').hide();
+        }
+
         this._currentView = view;
     }
 
