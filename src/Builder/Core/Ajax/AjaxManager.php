@@ -141,15 +141,21 @@ class AjaxManager
      */
     public function handleRenderPreview()
     {
-        // Debug nonce
+        // Catch any stray output from shortcodes (warnings, notices, etc.)
+        ob_start();
+
+        // Verify nonce
         $nonce = isset($_POST['nonce']) ? sanitize_text_field($_POST['nonce']) : '';
         if (!wp_verify_nonce($nonce, 'jux_builder_nonce')) {
-            wp_send_json_error('Invalid nonce - received: ' . substr($nonce, 0, 10) . '...');
+            ob_end_clean();
+            wp_send_json_error('Invalid nonce');
             return;
         }
 
         if (!current_user_can('edit_posts')) {
+            ob_end_clean();
             wp_send_json_error('Permission denied');
+            return;
         }
 
         $shortcodes = isset($_POST['shortcodes']) ? wp_unslash($_POST['shortcodes']) : [];
@@ -164,10 +170,10 @@ class AjaxManager
             // Add builder tracking ID
             $atts['_jux_id'] = $id;
 
-            // Render using ShortcodeManager (identical to frontend)
+            // Render using ShortcodeManager
             $html = ShortcodeManager::render($tag, $atts, $content);
 
-            // Wrap with tracking div for builder
+            // Wrap with tracking div
             $html = '<div class="jux-element-wrapper" data-jux-id="' . esc_attr($id) . '" data-tag="' . esc_attr($tag) . '">' . $html . '</div>';
 
             $rendered[] = [
@@ -176,6 +182,9 @@ class AjaxManager
                 'tag' => $tag,
             ];
         }
+
+        // Ignore any stray output collected so far
+        ob_end_clean();
 
         wp_send_json_success([
             'rendered' => $rendered,

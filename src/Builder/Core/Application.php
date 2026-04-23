@@ -18,6 +18,8 @@ class Application
     protected $container;
     protected $ajax;
     protected $version;
+    public $builder_scripts = [];
+    public $builder_styles = [];
 
     public function __construct()
     {
@@ -29,10 +31,11 @@ class Application
         $this->registerFactories();
 
         add_action('init', [$this, 'initialize'], 20);
+        add_action('wp_enqueue_scripts', [$this, 'enqueuePreviewAssets']);
     }
 
     /**
-     * Get singleton instance
+     * Render builder template
      */
     public static function getInstance()
     {
@@ -109,7 +112,7 @@ class Application
                 wp_die(__('You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'jankx'));
             }
 
-            return $container->create(Post\Post::class, ['post' => $post]);
+            return $container->create(Post\Post::class, [$post]);
         });
 
         $this->container->service('editing-post', function($container) {
@@ -122,7 +125,7 @@ class Application
                 wp_die(__('You attempted to edit an item that doesn\'t exist. Perhaps it was deleted?', 'jankx'));
             }
 
-            return $container->create(Post\Post::class, ['post' => $post]);
+            return $container->create(Post\Post::class, [$post]);
         });
 
         // Check permissions
@@ -178,7 +181,7 @@ class Application
      */
     public function isBuilderActive()
     {
-        return isset($_GET['app']) && $_GET['app'] === 'jux';
+        return (isset($_GET['app']) && $_GET['app'] === 'jux') || (isset($_GET['page']) && $_GET['page'] === 'ux-builder');
     }
 
     /**
@@ -225,11 +228,6 @@ class Application
         // Initialize ElementRegistry to load all elements
         \Jankx\Extensions\JankxUX\Builder\ElementRegistry::init();
         
-        // Debug: check if elements are loaded
-        $elements = \Jankx\Extensions\JankxUX\Builder\ElementRegistry::all();
-        error_log('JUX Elements loaded: ' . count($elements));
-        error_log('JUX Elements keys: ' . print_r(array_keys($elements), true));
-
         $version = $this->version;
         $assetsUrl = JANKX_UX_URL . 'assets/';
 
@@ -241,11 +239,11 @@ class Application
             $version
         );
 
-        // Core JS
+        // Core JS (Backbone based) - removed 'moment' as it's not a WP built-in and not needed
         wp_enqueue_script(
             'jux-builder-core',
             $assetsUrl . 'js/jux-builder.js',
-            ['jquery', 'jquery-ui-sortable', 'underscore'],
+            ['jquery', 'jquery-ui-sortable', 'underscore', 'backbone', 'wp-polyfill', 'wp-i18n', 'wp-api-fetch', 'wp-date', 'wp-data'],
             $version,
             true
         );
@@ -286,20 +284,86 @@ class Application
             ],
         ];
 
+        // Use wp_localize_script for the main data object - it handles escaping correctly
         wp_localize_script('jux-builder-core', 'juxBuilderData', $data);
+        
+        // Safety net for wp and moment
+        wp_add_inline_script('jux-builder-core', 'window.wp = window.wp || {}; window.moment = window.moment || function() { return { format: function() { return ""; } }; };', 'before');
 
-        // Also add as inline script to ensure it's available
-        $inlineScript = 'var juxBuilderData = ' . wp_json_encode($data) . ';';
-        wp_add_inline_script('jux-builder-core', $inlineScript, 'before');
+        // Store the scripts/styles we want to print
+        $this->builder_scripts = [
+            'wp-polyfill',
+            'wp-hooks',
+            'wp-i18n',
+            'wp-url',
+            'wp-api-fetch',
+            'wp-date',
+            'wp-data',
+            'jux-builder-core'
+        ];
+        $this->builder_styles = ['jux-builder-core'];
 
         do_action('jux_builder_enqueue_scripts', 'editor');
     }
 
     /**
+     * Enqueue assets for the preview iframe
+     */
+    public function enqueuePreviewAssets()
+    {
+        if (!$this->isIframe()) {
+            return;
+        }
+
+        $version = $this->version;
+        $assetsUrl = JANKX_UX_URL . 'assets/';
+
+        // Add the safety net directly to wp_head for the iframe to ensure it's at the very top
+        add_action('wp_head', function() {
+            echo '<script type="text/javascript">
+                window.wp = window.wp || {};
+                window.wp.i18n = window.wp.i18n || { setLocaleData: function() {} };
+                window.moment = window.moment || function() { return { format: function() { return ""; } }; };
+            </script>';
+        }, 1);
+
+        wp_enqueue_script(
+            'jux-preview',
+            $assetsUrl . 'js/jux-preview.js',
+            ['jquery', 'wp-polyfill', 'wp-i18n', 'wp-date'],
+            $version,
+            true
+        );
+
+        // Add highlight styles
+        add_action('wp_head', function() {
+            echo '<style>
+                .jux-element-highlight {
+                    outline: 2px solid #00a0d2 !important;
+                    outline-offset: -2px;
+                    position: relative;
+                }
+                .jux-element-highlight::after {
+                    content: "Selected";
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    background: #00a0d2;
+                    color: #fff;
+                    font-size: 10px;
+                    padding: 2px 5px;
+                    z-index: 9999;
+                }
+            </style>';
+        });
+    }
+
+    /**
      * Render builder template
      */
-    public function render($type)
+    public function render($type, $args = [])
     {
+        extract($args);
         $template = __DIR__ . '/../../../templates/admin/builder-canvas.php';
         
         if (file_exists($template)) {
@@ -315,5 +379,15 @@ class Application
     public function getVersion()
     {
         return $this->version;
+    }
+
+    /**
+     * Maybe takeover - placeholder method to prevent fatal error
+     * This may be called from cached hooks or old code
+     */
+    public function maybeTakeover()
+    {
+        // Placeholder - prevents fatal error from stale hooks
+        // TODO: Remove this if the hook registration is found and removed
     }
 }

@@ -29,11 +29,13 @@ class AdminManager
 
     public static function renderBuilder()
     {
+        $app = Application::getInstance();
+        $app->bootstrap();
+        $app->initialize(); // This sets up container services like 'editing-post'
+        $app->enqueueEditorAssets(); // This populates builder_scripts and builder_styles
+
         $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
         $post = get_post($post_id);
-
-        // Ensure Application is bootstrapped with container services
-        Application::getInstance()->bootstrap();
 
         jux_get_template_part('admin/builder', 'canvas', [
             'post'    => $post,

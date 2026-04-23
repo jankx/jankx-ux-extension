@@ -16,22 +16,26 @@
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php _e('JUX Builder', 'jankx'); ?></title>
-    <?php
-    // Since WordPress 6.4.0, print_emoji_styles is deprecated.
-    // We remove it from the hook and use wp_enqueue_emoji_styles instead if it exists.
-    if (function_exists('wp_enqueue_emoji_styles')) {
-        remove_action('wp_print_styles', 'print_emoji_styles');
-        wp_enqueue_emoji_styles();
-    }
-
-    wp_print_styles();
-    wp_print_scripts();
-    do_action('admin_print_styles');
-    do_action('admin_print_scripts');
-    do_action('admin_head');
+    <script type="text/javascript">
+        /* Early initialization to prevent ReferenceError: wp is not defined */
+        window.wp = window.wp || {};
+        window.wp.i18n = window.wp.i18n || { setLocaleData: function() {} };
+        window.moment = window.moment || function() { return { format: function() { return ""; } }; };
+    </script>
+    <?php 
+    $jux_app = \Jankx\Extensions\JankxUX\Builder\Core\Application::getInstance();
+    
+    // Enqueue core scripts
+    wp_enqueue_script('wp-polyfill');
+    wp_enqueue_script('wp-i18n');
+    wp_enqueue_script('wp-api-fetch');
+    wp_enqueue_script('wp-data');
+    wp_enqueue_script('wp-date');
+    
+    wp_print_styles($jux_app->builder_styles); 
     ?>
 </head>
-<body class="wp-admin wp-core-ui jux-builder-body">
+<body <?php body_class('wp-admin wp-core-ui jux-builder-body'); ?>>
 
 <div id="jux-builder-wrapper" class="jux-builder-ui jux-loading">
 
@@ -953,9 +957,9 @@
     z-index: 10;
 }
 </style>
-<?php
-do_action('admin_print_footer_scripts');
-do_action('admin_footer');
+<?php 
+$jux_app = \Jankx\Extensions\JankxUX\Builder\Core\Application::getInstance();
+wp_print_scripts($jux_app->builder_scripts); 
 wp_print_footer_scripts();
 ?>
 </body>

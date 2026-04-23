@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "target": "ES2017",
+        "module": "ES2020",
+        "moduleResolution": "bundler",
+        "lib": [
+            "ES2017",
+            "DOM",
+            "DOM.Iterable"
+        ],
+        "strict": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "outDir": "./assets/js",
+        "rootDir": "./assets/src",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "assets/src/*"
+            ]
+        },
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": [
+        "assets/src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "assets/js"
+    ]
+}

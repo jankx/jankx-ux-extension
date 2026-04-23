@@ -14,10 +14,15 @@ class Post
     protected $status;
     protected $type;
 
-    public function __construct($args = [])
+    public function __construct($post = null)
     {
-        if (isset($args['post'])) {
-            $this->post = $args['post'];
+        if ($post instanceof \WP_Post) {
+            $this->post = $post;
+        } elseif (is_array($post) && isset($post['post'])) {
+            $this->post = $post['post'];
+        }
+
+        if ($this->post) {
             $this->id = $this->post->ID;
             $this->title = $this->post->post_title;
             $this->content = $this->post->post_content;

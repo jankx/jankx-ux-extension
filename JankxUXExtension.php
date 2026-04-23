@@ -74,10 +74,11 @@ class JankxUXExtension extends AbstractExtension
             define('JANKX_UX_VERSION', $this->get_version());
         }
         if (!defined('JANKX_UX_PATH')) {
-            define('JANKX_UX_PATH', trailingslashit($this->get_extension_path()));
+            define('JANKX_UX_PATH', trailingslashit(__DIR__));
         }
         if (!defined('JANKX_UX_URL')) {
-            define('JANKX_UX_URL', trailingslashit($this->get_extension_url()));
+            $url = get_template_directory_uri() . '/extensions/jankx-ux/';
+            define('JANKX_UX_URL', trailingslashit($url));
         }
 
         // Legacy compatibility
