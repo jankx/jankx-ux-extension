@@ -301,7 +301,7 @@ class Application
             'wp-data',
             'jux-builder-core'
         ];
-        $this->builder_styles = ['jux-builder-core'];
+        $this->builder_styles = ['jux-builder-core', 'dashicons', 'buttons', 'forms'];
 
         do_action('jux_builder_enqueue_scripts', 'editor');
     }

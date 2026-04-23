@@ -56,6 +56,7 @@ export interface ElementDefinition {
     category: string;
     description: string;
     thumbnail: string;
+    icon?: string;
     options: Record<string, ElementOption>;
     presets: unknown[];
     allow_in: string[];

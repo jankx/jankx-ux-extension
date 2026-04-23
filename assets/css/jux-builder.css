@@ -1,72 +1,523 @@
-/**
- * Jankx UX Builder - Editor Styles
- */
+/* ==========================================================================
+   JANKX UX BUILDER — FLATSOME LIGHT STYLE
+   Perfectly matching Flatsome UX patterns
+   ========================================================================== */
 
-.jux-builder-element-item {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-    background: #fff;
-    transition: background 0.2s;
+:root {
+    --jux-bg: #f1f1f1;
+    --jux-sidebar-bg: #ffffff;
+    --jux-topbar-bg: #f9f9f9;
+    --jux-accent: #00a0d2;
+    /* Flatsome Blue */
+    --jux-border: #e5e5e5;
+    --jux-text-main: #333333;
+    --jux-text-dim: #777777;
+    --jux-radius: 4px;
+
+    /* Layout Constants */
+    --jux-sidebar-w: 280px;
+    --jux-topbar-h: 46px;
+
+    --jux-transition: all 0.2s ease-in-out;
 }
 
-.jux-builder-element-item:hover {
-    background: #f9f9f9;
+/* Reset */
+#jux-builder-wrapper,
+#jux-builder-wrapper :not(.dashicons) {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
-.jux-builder-element-item strong {
-    display: block;
-    font-size: 14px;
-    color: #23282d;
-}
-
-.jux-builder-element-item p {
-    margin: 5px 0 0;
-    font-size: 11px;
-    color: #666;
-    text-transform: uppercase;
-}
-
-/* Sidebar Styling */
-
-/* Preview Element Highlighting */
-.jux-element-wrapper {
-    position: relative;
-    transition: all 0.2s ease;
-}
-
-.jux-element-wrapper.jux-hover {
-    outline: 2px dashed #007cba;
-    outline-offset: 2px;
-    cursor: pointer;
-}
-
-.jux-element-wrapper.jux-selected {
-    outline: 2px solid #007cba;
-    outline-offset: 2px;
-}
-
-.jux-element-wrapper.jux-selected::before {
-    content: attr(data-tag);
-    position: absolute;
-    top: -20px;
+#jux-builder-wrapper {
+    position: fixed;
+    top: 0;
     left: 0;
-    background: #007cba;
-    color: #fff;
-    padding: 2px 8px;
-    font-size: 11px;
-    border-radius: 2px;
-    z-index: 1000;
-}
-.jux-builder-sidebar {
-    background: #fff;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-    z-index: 10;
+    right: 0;
+    bottom: 0;
+    z-index: 100000 !important;
+    background: #555d66;
+    display: flex;
+    flex-direction: column;
+    color: var(--jux-text-main);
+    overflow: hidden;
 }
 
-.jux-controls-header {
-    padding: 20px;
-    background: #f8f8f8;
-    border-bottom: 1px solid #ddd;
-    font-weight: bold;
+.jux-main-area {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* TOP BAR - FLATSOME STYLE */
+.jux-topbar {
+    height: var(--jux-topbar-h);
+    background: var(--jux-topbar-bg);
+    border-bottom: 1px solid var(--jux-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    z-index: 100;
+}
+
+.jux-add-button {
+    background: var(--jux-accent) !important;
+    color: white !important;
+    border: none !important;
+    padding: 4px 12px !important;
+    border-radius: var(--jux-radius) !important;
+    font-weight: 600 !important;
+    font-size: 11px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    text-transform: uppercase !important;
+}
+
+.jux-history {
+    display: flex;
+    gap: 2px;
+    margin-left: 10px;
+    padding-left: 10px;
+    border-left: 1px solid var(--jux-border);
+}
+
+.jux-btn-icon {
+    background: transparent !important;
+    border: none !important;
+    color: #666 !important;
+    cursor: pointer !important;
+    padding: 4px !important;
+    border-radius: 2px !important;
+}
+
+.jux-btn-icon:hover {
+    background: #eee !important;
+    color: #000 !important;
+}
+
+/* DEVICE SWITCHER */
+.jux-device-switcher {
+    display: flex;
+    gap: 4px;
+}
+
+.jux-device-switcher button {
+    background: transparent !important;
+    border: none !important;
+    color: #999 !important;
+    padding: 4px 8px !important;
+    cursor: pointer !important;
+}
+
+.jux-device-switcher button.active {
+    background: var(--jux-accent) !important;
+    color: white !important;
+    border-radius: 3px !important;
+}
+
+.jux-btn-save {
+    background: #00a0d2 !important;
+    color: white !important;
+    border: none !important;
+    padding: 6px 16px !important;
+    border-radius: 3px !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    cursor: pointer !important;
+}
+
+/* SIDEBAR */
+.jux-sidebar {
+    width: var(--jux-sidebar-w);
+    background: #fff;
+    border-right: 1px solid var(--jux-border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+}
+
+.jux-sidebar-title-row {
+    padding: 0 15px;
+    height: 50px;
+    border-bottom: 1px solid var(--jux-border);
+    display: flex;
+    align-items: center;
+    background: #fff;
+}
+
+.jux-sidebar-title-text {
+    font-weight: 800;
+    font-size: 14px;
+    color: #444;
+    flex: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* HIERARCHY */
+.jux-sidebar-view {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.jux-hierarchy-label {
+    background: #ffffff !important;
+    border: 1px solid #efefef !important;
+    color: #555 !important;
+    padding: 8px 12px !important;
+    border-radius: 4px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    margin-bottom: 2px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+    transition: var(--jux-transition) !important;
+    position: relative !important;
+    cursor: pointer !important;
+}
+
+.jux-element-icon {
+    font-size: 16px !important;
+    color: #bbb !important;
+    width: 20px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.jux-hierarchy-name {
+    flex: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.jux-hierarchy-gear {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    font-size: 14px !important;
+    color: #00a0d2 !important;
+}
+
+.jux-hierarchy-label:hover .jux-hierarchy-gear {
+    opacity: 1;
+}
+
+.jux-hierarchy-label:hover {
+    border-color: var(--jux-accent) !important;
+    color: var(--jux-accent) !important;
+    background: #f0faff !important;
+}
+
+.jux-hierarchy-label.is-selected {
+    background: var(--jux-accent) !important;
+    color: white !important;
+    border-color: var(--jux-accent) !important;
+    box-shadow: 0 4px 12px rgba(0, 160, 210, 0.2) !important;
+}
+
+.jux-hierarchy-name {
+    flex: 1;
+}
+
+.jux-hierarchy-info {
+    font-size: 10px;
+    opacity: 0.5;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.dashicons {
+    font-family: dashicons !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+}
+
+.jux-hierarchy-children {
+    padding-left: 20px;
+    border-left: 1px solid #eee;
+    margin-left: 14px;
+}
+
+.jux-app-stack {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 200000 !important;
+    display: none;
+    /* Controlled by .is-visible */
+    align-items: stretch;
+    justify-content: flex-start;
+}
+
+.jux-app-stack.is-visible {
+    display: flex !important;
+}
+
+.jux-stack-backdrop {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+    z-index: 1 !important;
+    cursor: auto !important;
+}
+
+.jux-stack-wrapper {
+    background: white !important;
+    width: var(--jux-sidebar-w) !important;
+    height: 100% !important;
+    border-right: 1px solid var(--jux-border) !important;
+    box-shadow: 10px 0 50px rgba(0, 0, 0, 0.1) !important;
+    position: relative !important;
+    z-index: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    animation: juxSlideIn 0.3s ease-out;
+}
+
+.jux-stack-close {
+    background: #00a0d2 !important;
+    position: absolute !important;
+    top: 50px !important;
+    right: -16px !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    border: 2px solid white !important;
+    color: white !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 20px !important;
+    cursor: pointer !important;
+    z-index: 10 !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+    padding: 0 0 2px 0 !important;
+    line-height: 1 !important;
+}
+
+@keyframes juxSlideIn {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+.add-shortcode-header {
+    padding: 20px 20px 10px !important;
+    background: #fff !important;
+}
+
+.add-shortcode-header h2.title {
+    color: #444 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    margin: 0 0 15px 0 !important;
+}
+
+.add-shortcode-types {
+    display: flex !important;
+    gap: 15px !important;
+    border-bottom: 2px solid #f1f1f1 !important;
+    margin-bottom: 15px !important;
+}
+
+.add-shortcode-types button {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    color: #bbb !important;
+    padding: 8px 0 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    min-width: 0 !important;
+}
+
+.add-shortcode-types button.active {
+    color: var(--jux-accent) !important;
+    border-bottom-color: var(--jux-accent) !important;
+}
+
+.jux-studio-btn {
+    background: #00a0d2 !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px !important;
+    width: 100% !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    cursor: pointer !important;
+    margin-bottom: 15px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.filter-elements {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    color: #333 !important;
+    border-radius: 2px !important;
+    padding: 6px 10px !important;
+    margin: 10px 0 !important;
+}
+
+.add-shortcode-category h3 {
+    font-size: 10px !important;
+    color: #bbb !important;
+    margin-bottom: 10px !important;
+    font-weight: 700 !important;
+}
+
+/* GRID 2 COLUMNS */
+.add-shortcode-category ul {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+}
+
+.add-shortcode-box-button {
+    background: white !important;
+    border: 1px solid #eee !important;
+    border-radius: 4px !important;
+    padding: 10px 5px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-height: 100px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.add-shortcode-box-button:hover {
+    border-color: var(--jux-accent) !important;
+    box-shadow: 0 4px 12px rgba(0, 160, 210, 0.1) !important;
+}
+
+/* Flatsome-style Icons Area */
+.add-shortcode-icon-frame {
+    width: 100%;
+    height: 55px;
+    background: #f2faff;
+    border: 1px solid #e1f0fa;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4ab3f4;
+    font-size: 24px;
+}
+
+.add-shortcode-box-button .title {
+    color: #555 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    display: block !important;
+}
+
+/* PREVIEW AREA */
+.jux-preview-area {
+    flex: 1;
+    background: #555d66 !important;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    position: relative;
+}
+
+.jux-preview-container {
+    width: 100%;
+    height: 100%;
+    background: white;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+    margin: 0 auto;
+    max-width: 100%;
+    transition: var(--jux-transition);
+}
+
+.jux-preview-container.desktop {
+    width: 100%;
+}
+
+.jux-preview-container.tablet {
+    width: 768px;
+    height: 1024px;
+}
+
+.jux-preview-container.mobile {
+    width: 375px;
+    height: 667px;
+}
+
+.jux-preview-container iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    display: block !important;
+}
+
+.jux-preview-container.tablet,
+.jux-preview-container.mobile {
+    border: 12px solid #1a1a1a !important;
+    border-radius: 20px !important;
+}
+
+/* OPTIONS SIDEBAR */
+.jux-option-group {
+    background: #fafafa !important;
+    border: 1px solid #eee !important;
+    border-radius: 2px !important;
+}
+
+.jux-option-label {
+    color: #555 !important;
+    border-bottom-color: #eee !important;
+}
+
+.jux-option-field input,
+.jux-option-field select {
+    color: #333 !important;
+    background: white !important;
+    border-color: #ddd !important;
+}
+
+/* Loader */
+.jux-loader-overlay {
+    background: #fff !important;
+}
+
+.jux-loader-text {
+    color: #444 !important;
 }

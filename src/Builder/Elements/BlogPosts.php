@@ -107,7 +107,7 @@ class BlogPosts extends AbstractElement
                                     <?php if ($date === 'true') : ?>
                                         <p class="post-date"><?php echo get_the_date(); ?></p>
                                     <?php endif; ?>
-                                    <h5 class="post-title is-large"><a href="<?php path_to_file(); ?>"><?php the_title(); ?></a></h5>
+                                    <h5 class="post-title is-large"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h5>
                                     <div class="is-divider"></div>
                                     <?php if ($excerpt === 'true') : ?>
                                         <p class="from_the_blog_excerpt"><?php echo wp_trim_words(get_the_excerpt(), 15); ?></p>

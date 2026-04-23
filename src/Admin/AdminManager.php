@@ -41,6 +41,7 @@ class AdminManager
             'post'    => $post,
             'post_id' => $post_id
         ]);
+        exit;
     }
 
     public static function addBuilderLink($actions, $post)

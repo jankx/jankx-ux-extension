@@ -23,8 +23,22 @@ class AddPanelView extends Backbone.View<Backbone.Model, HTMLElement> {
         super(options);
         this._elements = options.elements;
         this._onAdd = options.onAdd;
-        // setElement() re-runs delegateEvents() on the actual DOM element
-        this.setElement(document.getElementById('jux-app-stack') as HTMLElement);
+
+        const el = document.getElementById('jux-app-stack') as HTMLElement;
+        this.setElement(el);
+
+        // Global delegate for stability
+        jQuery(document).on('click', '#jux-stack-close', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.close();
+        });
+
+        jQuery(document).on('click', '#jux-stack-backdrop', (e) => {
+            if (e.target.id === 'jux-stack-backdrop') {
+                this.close();
+            }
+        });
     }
 
     getCategorized(): Record<string, Array<[string, ElementDefinition]>> {
@@ -34,7 +48,38 @@ class AddPanelView extends Backbone.View<Backbone.Model, HTMLElement> {
             if (!result[cat]) result[cat] = [];
             result[cat].push([tag, el]);
         });
-        return result;
+
+        // Ensure 'Layout' is at the top
+        const sorted: Record<string, Array<[string, ElementDefinition]>> = {};
+        if (result['Layout']) {
+            sorted['Layout'] = result['Layout'];
+            delete result['Layout'];
+        }
+        Object.assign(sorted, result);
+        return sorted;
+    }
+
+    getIconForTag(tag: string): string {
+        const map: Record<string, string> = {
+            'ux_banner': 'dashicons-format-image',
+            'text_box': 'dashicons-editor-paragraph',
+            'button': 'dashicons-button',
+            'row': 'dashicons-layout',
+            'section': 'dashicons-feedback',
+            'ux_slider': 'dashicons-images-alt2',
+            'ux_image': 'dashicons-format-image',
+            'blog_posts': 'dashicons-admin-post',
+            'text': 'dashicons-editor-textcolor',
+            'ux_gallery': 'dashicons-format-gallery',
+            'featured_box': 'dashicons-star-filled',
+            'ux_image_box': 'dashicons-art',
+            'team_member': 'dashicons-admin-users',
+            'ux_stack': 'dashicons-list-view',
+            'ux_price_table': 'dashicons-tag',
+            'ux_hotspot': 'dashicons-location',
+            'gap': 'dashicons-minus',
+        };
+        return map[tag] || 'dashicons-admin-generic';
     }
 
     renderElements() {
@@ -47,14 +92,19 @@ class AddPanelView extends Backbone.View<Backbone.Model, HTMLElement> {
         }
 
         Object.entries(categorized).forEach(([catName, items]) => {
-            const itemsHtml = items.map(([tag, el]) => `
-                <li class="add-shortcode-box">
-                    <button class="add-shortcode-box-button" type="button" data-tag="${tag}">
-                        ${el.thumbnail ? `<img src="${el.thumbnail}" alt="${el.name}">` : ''}
-                        <span class="title">${el.name || tag}</span>
-                    </button>
-                </li>
-            `).join('');
+            const itemsHtml = items.map(([tag, el]) => {
+                const iconClass = el.icon || this.getIconForTag(tag);
+                return `
+                    <li class="add-shortcode-box">
+                        <button class="add-shortcode-box-button" type="button" data-tag="${tag}">
+                            <div class="add-shortcode-icon-frame">
+                                ${el.thumbnail ? `<img src="${el.thumbnail}" alt="${el.name}">` : `<span class="dashicons ${iconClass}"></span>`}
+                            </div>
+                            <span class="title">${el.name || tag}</span>
+                        </button>
+                    </li>
+                `;
+            }).join('');
 
             $list.append(`
                 <div class="add-shortcode-category">

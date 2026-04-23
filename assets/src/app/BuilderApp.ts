@@ -221,8 +221,11 @@ class BuilderApp extends Backbone.View<Backbone.Model, HTMLElement> {
 
         const $btn = jQuery('#jux-save-footer');
         const $topBtn = jQuery('#jux-save-post');
+        const originalText = $topBtn.text();
+        const footerLabel = this._data.postStatus === 'publish' ? 'Update' : 'Save Draft';
+
         $btn.text('Saving…');
-        $topBtn.prop('disabled', true);
+        $topBtn.text('Saving…').prop('disabled', true);
 
         const content = this._nodes.toShortcodeContent();
 
@@ -234,18 +237,21 @@ class BuilderApp extends Backbone.View<Backbone.Model, HTMLElement> {
             status: this._data.postStatus === 'publish' ? 'publish' : 'draft',
         })
             .done((response: { success: boolean }) => {
-                const label = this._data.postStatus === 'publish' ? 'Update' : 'Save Draft';
-                $btn.text(response.success ? '✓ Saved' : '✗ Error');
+                const label = this._data.postStatus === 'publish' ? '✓ Updated' : '✓ Saved';
+                $btn.text(response.success ? label : '✗ Error');
+                $topBtn.text(response.success ? label : '✗ Error');
+
                 setTimeout(() => {
-                    $btn.text(label);
-                    $topBtn.prop('disabled', false);
+                    $btn.text(footerLabel);
+                    $topBtn.text(originalText).prop('disabled', false);
                 }, 2000);
             })
             .fail(() => {
                 $btn.text('✗ Failed');
+                $topBtn.text('✗ Failed');
                 setTimeout(() => {
-                    $btn.text('Save Draft');
-                    $topBtn.prop('disabled', false);
+                    $btn.text(footerLabel);
+                    $topBtn.text(originalText).prop('disabled', false);
                 }, 2000);
             })
             .always(() => {

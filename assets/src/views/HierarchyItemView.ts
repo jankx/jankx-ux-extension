@@ -37,14 +37,39 @@ class HierarchyItemView extends Backbone.View<Backbone.Model, HTMLElement> {
         this.className = 'jux-hierarchy-item';
     }
 
+    private getIconForTag(tag: string): string {
+        const map: Record<string, string> = {
+            'ux_banner': 'dashicons-format-image',
+            'text_box': 'dashicons-editor-paragraph',
+            'button': 'dashicons-button',
+            'row': 'dashicons-layout',
+            'section': 'dashicons-feedback',
+            'ux_slider': 'dashicons-images-alt2',
+            'ux_image': 'dashicons-format-image',
+            'blog_posts': 'dashicons-admin-post',
+            'text': 'dashicons-editor-textcolor',
+            'ux_gallery': 'dashicons-format-gallery',
+            'featured_box': 'dashicons-star-filled',
+            'ux_image_box': 'dashicons-art',
+            'team_member': 'dashicons-admin-users',
+            'ux_stack': 'dashicons-list-view',
+            'ux_price_table': 'dashicons-tag',
+            'ux_hotspot': 'dashicons-location',
+            'gap': 'dashicons-minus',
+        };
+        return map[tag] || 'dashicons-admin-generic';
+    }
+
     private template = _.template(`
         <div class="jux-hierarchy-label">
             <% if (hasChildren) { %>
             <button class="jux-hierarchy-toggle dashicons dashicons-arrow-down-alt2"></button>
             <% } %>
+            <span class="jux-element-icon dashicons <%- iconClass %>"></span>
             <span class="jux-hierarchy-name"><%- displayName %></span>
-            <% if (info) { %><span class="jux-hierarchy-info"><%- info %></span><% } %>
-            <button class="dashicons dashicons-admin-generic jux-hierarchy-gear" title="Settings"></button>
+            <div class="jux-hierarchy-actions">
+                <button class="dashicons dashicons-admin-generic jux-hierarchy-gear" title="Settings"></button>
+            </div>
         </div>
     `);
 
@@ -55,7 +80,7 @@ class HierarchyItemView extends Backbone.View<Backbone.Model, HTMLElement> {
 
         this.$el.html(this.template({
             displayName,
-            info: this.node.info || '',
+            iconClass: this.getIconForTag(this.node.tag),
             hasChildren: !!(this.node.children && this.node.children.length > 0),
         }));
 
