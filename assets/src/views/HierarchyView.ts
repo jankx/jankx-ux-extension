@@ -24,8 +24,8 @@ class HierarchyView extends Backbone.View<Backbone.Model, HTMLElement> {
         super(options);
         this._onGear = options.onGear;
         this._onAddElement = options.onAddElement;
-        this.el = document.getElementById('jux-hierarchy') as HTMLElement;
-        this.$el = jQuery(this.el);
+        // setElement() re-runs delegateEvents() on the actual DOM element
+        this.setElement(document.getElementById('jux-hierarchy') as HTMLElement);
         this.listenTo(this.collection, 'add remove reset change', this.render.bind(this));
     }
 

@@ -28,8 +28,8 @@ class OptionsView extends Backbone.View<Backbone.Model, HTMLElement> {
         this._elementDef = options.elementDef;
         this._onApply = options.onApply;
         this._onDiscard = options.onDiscard;
-        this.el = document.getElementById('jux-view-shortcode') as HTMLElement;
-        this.$el = jQuery(this.el);
+        // setElement() re-runs delegateEvents() on the actual DOM element
+        this.setElement(document.getElementById('jux-view-shortcode') as HTMLElement);
     }
 
     renderField(key: string, opt: ElementOption, currentValue: unknown): string {

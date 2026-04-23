@@ -1,6 +1,6 @@
 {
     "name": "Jankx UX",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "Flatsome-inspired structure, hooks, and blocks for Jankx.",
     "author": "Jankx",
     "extension_id": "jankx-ux",

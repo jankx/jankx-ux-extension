@@ -40,8 +40,11 @@ class BuilderApp extends Backbone.View<Backbone.Model, HTMLElement> {
     constructor(data: JUXBuilderData) {
         super();
         this._data = data;
-        this.el = document.getElementById('jux-builder-wrapper') as HTMLElement;
-        this.$el = jQuery(this.el);
+        // Use setElement() instead of directly assigning this.el / this.$el.
+        // Backbone's super() binds delegateEvents() to a freshly-created detached
+        // div; setElement() swaps the element AND re-runs delegateEvents() so that
+        // all click handlers in `events` are bound to the real DOM node.
+        this.setElement(document.getElementById('jux-builder-wrapper') as HTMLElement);
 
         this._nodes = new ElementNodeCollection();
         this._nodes.reset(data.contentNodes || []);

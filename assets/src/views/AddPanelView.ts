@@ -23,8 +23,8 @@ class AddPanelView extends Backbone.View<Backbone.Model, HTMLElement> {
         super(options);
         this._elements = options.elements;
         this._onAdd = options.onAdd;
-        this.el = document.getElementById('jux-app-stack') as HTMLElement;
-        this.$el = jQuery(this.el);
+        // setElement() re-runs delegateEvents() on the actual DOM element
+        this.setElement(document.getElementById('jux-app-stack') as HTMLElement);
     }
 
     getCategorized(): Record<string, Array<[string, ElementDefinition]>> {

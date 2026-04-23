@@ -13,14 +13,12 @@
             return;
         }
 
-        // Replace or insert each rendered element
+        // Clear existing content to avoid duplication and ensure correct order
+        container.innerHTML = '';
+
+        // Append all rendered elements in order
         items.forEach((item) => {
-            const existing = container.querySelector(`[data-jux-id="${item.id}"]`);
-            if (existing) {
-                existing.outerHTML = item.html;
-            } else {
-                container.insertAdjacentHTML('beforeend', item.html);
-            }
+            container.insertAdjacentHTML('beforeend', item.html);
         });
     }
 
