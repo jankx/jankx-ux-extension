@@ -18,7 +18,39 @@ class Column extends AbstractElement
             'category'    => __('Layout', 'jankx'),
             'description' => __('Create a column inside a row.', 'jankx'),
             'wrap'        => true,
-            'options'     => [],
+            'options'     => [
+                'span' => [
+                    'type'    => 'select',
+                    'heading' => __('Span', 'jankx'),
+                    'default' => '12',
+                    'options' => [
+                        '1' => '1/12', '2' => '2/12', '3' => '3/12', '4' => '4/12',
+                        '5' => '5/12', '6' => '6/12', '7' => '7/12', '8' => '8/12',
+                        '9' => '9/12', '10' => '10/12', '11' => '11/12', '12' => '12/12',
+                    ],
+                ],
+                'padding' => [
+                    'type'    => 'textfield',
+                    'heading' => __('Padding', 'jankx'),
+                    'default' => '',
+                ],
+                'bg_color' => [
+                    'type'    => 'color',
+                    'heading' => __('Background Color', 'jankx'),
+                    'default' => '',
+                ],
+                'align' => [
+                    'type'    => 'select',
+                    'heading' => __('Align', 'jankx'),
+                    'default' => '',
+                    'options' => [
+                        ''       => __('Default', 'jankx'),
+                        'left'   => __('Left', 'jankx'),
+                        'center' => __('Center', 'jankx'),
+                        'right'  => __('Right', 'jankx'),
+                    ],
+                ],
+            ],
             'presets'     => [],
             'allow_in'    => ['row'],
         ];

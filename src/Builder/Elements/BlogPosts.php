@@ -17,7 +17,45 @@ class BlogPosts extends AbstractElement
             'category'    => __('Content', 'jankx'),
             'description' => __('Display latest blog posts in grid or slider.', 'jankx'),
             'wrap'        => false,
-            'options'     => [],
+            'options'     => [
+                'type' => [
+                    'type'    => 'select',
+                    'heading' => __('Type', 'jankx'),
+                    'default' => 'grid',
+                    'options' => [
+                        'grid'   => __('Grid', 'jankx'),
+                        'slider' => __('Slider', 'jankx'),
+                        'row'    => __('Row', 'jankx'),
+                    ],
+                ],
+                'columns' => [
+                    'type'    => 'select',
+                    'heading' => __('Columns', 'jankx'),
+                    'default' => '4',
+                    'options' => [
+                        '1' => '1',
+                        '2' => '2',
+                        '3' => '3',
+                        '4' => '4',
+                        '6' => '6',
+                    ],
+                ],
+                'posts' => [
+                    'type'    => 'number',
+                    'heading' => __('Total Posts', 'jankx'),
+                    'default' => '8',
+                ],
+                'category' => [
+                    'type'    => 'textfield',
+                    'heading' => __('Category Slug', 'jankx'),
+                    'default' => '',
+                ],
+                'excerpt' => [
+                    'type'    => 'checkbox',
+                    'heading' => __('Show Excerpt', 'jankx'),
+                    'default' => 'true',
+                ],
+            ],
         ];
     }
 

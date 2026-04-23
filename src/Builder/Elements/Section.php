@@ -18,7 +18,38 @@ class Section extends AbstractElement
             'category'    => __('Layout', 'jankx'),
             'description' => __('Full-width content section with background options.', 'jankx'),
             'wrap'        => true,
-            'options'     => [],
+            'options'     => [
+                'bg_color' => [
+                    'type'    => 'color',
+                    'heading' => __('Background Color', 'jankx'),
+                    'default' => '',
+                ],
+                'bg' => [
+                    'type'    => 'image',
+                    'heading' => __('Background Image', 'jankx'),
+                ],
+                'bg_overlay' => [
+                    'type'    => 'color',
+                    'heading' => __('Overlay Color', 'jankx'),
+                ],
+                'padding' => [
+                    'type'    => 'textfield',
+                    'heading' => __('Padding', 'jankx'),
+                    'default' => '30px',
+                    'placeholder' => '30px, 50px, 5%',
+                ],
+                'height' => [
+                    'type'    => 'textfield',
+                    'heading' => __('Min Height', 'jankx'),
+                    'default' => '',
+                    'placeholder' => 'auto, 500px, 100vh',
+                ],
+                'dark' => [
+                    'type'    => 'checkbox',
+                    'heading' => __('Dark Text', 'jankx'),
+                    'default' => 'false',
+                ],
+            ],
             'presets'     => [],
             'allow_in'    => [],
         ];

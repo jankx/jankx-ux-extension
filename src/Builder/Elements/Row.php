@@ -18,7 +18,43 @@ class Row extends AbstractElement
             'category'    => __('Layout', 'jankx'),
             'description' => __('Create a row container for columns.', 'jankx'),
             'wrap'        => true,
-            'options'     => [],
+            'options'     => [
+                'style' => [
+                    'type'    => 'select',
+                    'heading' => __('Style', 'jankx'),
+                    'default' => '',
+                    'options' => [
+                        ''         => __('Default', 'jankx'),
+                        'collapse' => __('Collapse', 'jankx'),
+                        'full-width' => __('Full Width', 'jankx'),
+                    ],
+                ],
+                'width' => [
+                    'type'    => 'select',
+                    'heading' => __('Width', 'jankx'),
+                    'default' => '',
+                    'options' => [
+                        ''           => __('Container', 'jankx'),
+                        'full-width' => __('Full Width', 'jankx'),
+                        'custom'     => __('Custom', 'jankx'),
+                    ],
+                ],
+                'v_align' => [
+                    'type'    => 'select',
+                    'heading' => __('Vertical Align', 'jankx'),
+                    'default' => '',
+                    'options' => [
+                        ''       => __('Top', 'jankx'),
+                        'middle' => __('Middle', 'jankx'),
+                        'bottom' => __('Bottom', 'jankx'),
+                    ],
+                ],
+                'class' => [
+                    'type'    => 'textfield',
+                    'heading' => __('Custom Class', 'jankx'),
+                    'default' => '',
+                ],
+            ],
             'allow_in'    => ['section', 'ux_block'],
         ];
     }

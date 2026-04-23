@@ -19,7 +19,39 @@ class Text extends AbstractElement
             'category'    => __('Content', 'jankx'),
             'description' => __('Simple text/HTML content block.', 'jankx'),
             'wrap'        => false,
-            'options'     => [],
+            'options'     => [
+                'text' => [
+                    'type'    => 'textarea',
+                    'heading' => __('Content', 'jankx'),
+                    'default' => __('Enter your text here...', 'jankx'),
+                ],
+                'text_align' => [
+                    'type'    => 'select',
+                    'heading' => __('Text Align', 'jankx'),
+                    'default' => 'left',
+                    'options' => [
+                        'left'   => __('Left', 'jankx'),
+                        'center' => __('Center', 'jankx'),
+                        'right'  => __('Right', 'jankx'),
+                    ],
+                ],
+                'font_size' => [
+                    'type'    => 'select',
+                    'heading' => __('Font Size', 'jankx'),
+                    'default' => '',
+                    'options' => [
+                        ''       => __('Normal', 'jankx'),
+                        'large'  => __('Large', 'jankx'),
+                        'xlarge' => __('X-Large', 'jankx'),
+                        'small'  => __('Small', 'jankx'),
+                    ],
+                ],
+                'text_color' => [
+                    'type'    => 'color',
+                    'heading' => __('Text Color', 'jankx'),
+                    'default' => '',
+                ],
+            ],
             'allow_in'    => ['col', 'section', 'ux_block'],
         ];
     }

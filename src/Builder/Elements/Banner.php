@@ -17,7 +17,48 @@ class Banner extends AbstractElement
             'title'    => __('Banner', 'jankx'),
             'category' => __('Content', 'jankx'),
             'wrap'     => false,
-            'options'  => [],
+            'options'  => [
+                'height' => [
+                    'type'    => 'textfield',
+                    'heading' => __('Height', 'jankx'),
+                    'default' => '600px',
+                    'placeholder' => '600px, 100%, 75vh',
+                ],
+                'bg' => [
+                    'type'    => 'image',
+                    'heading' => __('Background Image', 'jankx'),
+                ],
+                'bg_color' => [
+                    'type'    => 'color',
+                    'heading' => __('Background Color', 'jankx'),
+                ],
+                'bg_overlay' => [
+                    'type'    => 'color',
+                    'heading' => __('Overlay Color', 'jankx'),
+                ],
+                'text_pos' => [
+                    'type'    => 'select',
+                    'heading' => __('Text Position', 'jankx'),
+                    'default' => 'center center',
+                    'options' => [
+                        'center center' => __('Center', 'jankx'),
+                        'left center'   => __('Left', 'jankx'),
+                        'right center'  => __('Right', 'jankx'),
+                        'center top'    => __('Top', 'jankx'),
+                        'center bottom' => __('Bottom', 'jankx'),
+                    ],
+                ],
+                'animate' => [
+                    'type'    => 'select',
+                    'heading' => __('Animation', 'jankx'),
+                    'default' => 'fadeIn',
+                    'options' => [
+                        'fadeIn'     => __('Fade In', 'jankx'),
+                        'bounceIn'  => __('Bounce In', 'jankx'),
+                        'slideInUp' => __('Slide In Up', 'jankx'),
+                    ],
+                ],
+            ],
         ];
     }
 
