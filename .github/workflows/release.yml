@@ -1,0 +1,82 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: zip
+          tools: composer:v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install JS dependencies and Build Assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install PHP dependencies (Production)
+        run: |
+          composer install --no-dev --optimize-autoloader --prefer-dist --no-progress
+
+      - name: Package Extension
+        run: |
+          # Get tag name for filename
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          FILE_NAME="jankx-ux-${TAG_NAME}.zip"
+          
+          echo "Packaging extension version ${TAG_NAME}..."
+          
+          # Create a temporary staging directory
+          mkdir -p build/jankx-ux
+          
+          # Use rsync to copy files, excluding development-only files and folders
+          # We want to keep: src, inc, assets (built), templates, manifest.json, JankxUXExtension.php, vendor (production)
+          rsync -av --progress . build/jankx-ux \
+            --exclude="/.git" \
+            --exclude="/.github" \
+            --exclude="/.gitignore" \
+            --exclude="/tests" \
+            --exclude="/node_modules" \
+            --exclude="/assets/src" \
+            --exclude="/tsconfig.json" \
+            --exclude="/webpack.config.js" \
+            --exclude="/package.json" \
+            --exclude="/package-lock.json" \
+            --exclude="/composer.json" \
+            --exclude="/composer.lock" \
+            --exclude="/phpunit.xml" \
+            --exclude="/phpunit.xml.dist" \
+            --exclude="/build" \
+            --exclude="/run-tests.sh"
+            
+          # Compress the staging directory
+          cd build
+          zip -r "../${FILE_NAME}" jankx-ux
+          cd ..
+          
+          echo "Created ${FILE_NAME}"
+
+      - name: Create Release and Upload Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: jankx-ux-*.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
