@@ -120,7 +120,11 @@ class Row extends AbstractElement
         }
 
         $output  = '<div class="' . esc_attr($class_str) . '"' . $custom_width_attr . ' id="' . $id . '">';
-        $output .= do_shortcode($content);
+        $inner_content = do_shortcode($content);
+        if (trim($inner_content) === '' && defined('JUX_BUILDER')) {
+            $inner_content = self::renderPlaceholder('row', __('Row', 'jankx'));
+        }
+        $output .= $inner_content;
         $output .= '</div>';
         if ($col_css) {
             $output .= '<style>' . $col_css . '</style>';

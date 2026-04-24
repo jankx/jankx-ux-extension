@@ -53,6 +53,7 @@ class BuilderApp extends Backbone.View<Backbone.Model, HTMLElement> {
             collection: this._nodes,
             onGear: this._configureNode.bind(this),
             onAddElement: this._openAddPanelForParent.bind(this),
+            onNodesChanged: this._onNodesChanged.bind(this),
         });
 
         this._addPanelView = new AddPanelView({
@@ -154,7 +155,8 @@ class BuilderApp extends Backbone.View<Backbone.Model, HTMLElement> {
 
     private _openAddPanelForParent(parentId?: string) {
         this._pendingParentId = parentId;
-        this._addPanelView.open();
+        const parentTag = parentId ? this._findNodeTag(parentId) : undefined;
+        this._addPanelView.open(parentTag);
     }
 
     private onHierarchyAdd(e: JQuery.ClickEvent) {
@@ -207,6 +209,29 @@ class BuilderApp extends Backbone.View<Backbone.Model, HTMLElement> {
             if (node.children && this._walkAndAddChild(node.children, parentId, child)) return true;
         }
         return false;
+    }
+
+    /** Called by HierarchyView after drag & drop reorders nodes */
+    private _onNodesChanged(_nodes: BuilderNode[]) {
+        this._pushHistory();
+        this._updatePreview();
+    }
+
+    /** Find the tag of a node anywhere in the tree */
+    private _findNodeTag(id: string): string | undefined {
+        const nodes = this._nodes.toJSON() as BuilderNode[];
+        return this._walkFindTag(nodes, id);
+    }
+
+    private _walkFindTag(nodes: BuilderNode[], id: string): string | undefined {
+        for (const node of nodes) {
+            if (node.id === id) return node.tag;
+            if (node.children) {
+                const found = this._walkFindTag(node.children, id);
+                if (found) return found;
+            }
+        }
+        return undefined;
     }
 
     private _importShortcodes(raw: string) {
@@ -382,6 +407,11 @@ class BuilderApp extends Backbone.View<Backbone.Model, HTMLElement> {
             case 'jux-ready':
                 this._updatePreview();
                 break;
+            case 'jux-open-add': {
+                const parentId = (e.data as { parentId?: string }).parentId;
+                this._openAddPanelForParent(parentId);
+                break;
+            }
         }
     }
 

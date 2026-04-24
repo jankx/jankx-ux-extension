@@ -51,6 +51,17 @@
 
     // Send click events on JUX elements back to builder
     document.addEventListener('click', (e: MouseEvent) => {
+        const placeholderBtn = (e.target as Element).closest('.jux-placeholder-add-btn');
+        if (placeholderBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const placeholder = placeholderBtn.closest('.jux-placeholder');
+            const parentId = placeholder?.closest('[data-jux-id]')?.getAttribute('data-jux-id');
+            // If parentId is null, it means we are adding to root
+            window.parent.postMessage({ action: 'jux-open-add', parentId: parentId || null }, '*');
+            return;
+        }
+
         const target = (e.target as Element).closest('[data-jux-id]');
         if (target) {
             e.preventDefault();

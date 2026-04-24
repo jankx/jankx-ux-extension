@@ -571,3 +571,59 @@
 .jux-loader-text {
     color: #444 !important;
 }
+
+/* ============================================================
+   DRAG & DROP — Sortable
+   ============================================================ */
+
+/* Drag ghost (the element being dragged) */
+.jux-hierarchy-item.jux-dragging {
+    opacity: 0.6 !important;
+    background: #e8f5ff !important;
+    border-radius: 4px !important;
+    box-shadow: 0 4px 16px rgba(0, 160, 210, 0.25) !important;
+}
+
+/* Placeholder (the drop slot) */
+.jux-sortable-placeholder {
+    background: #e1f3fa !important;
+    border: 2px dashed #00a0d2 !important;
+    border-radius: 4px !important;
+    margin-bottom: 2px !important;
+    min-height: 36px !important;
+    visibility: visible !important;
+}
+
+/* Drag handle — shown on label hover */
+.jux-hierarchy-label {
+    cursor: grab !important;
+}
+
+.jux-hierarchy-label:active {
+    cursor: grabbing !important;
+}
+
+/* Container highlighted when something is dragged over it */
+.jux-sortable-list.jux-sortable-over {
+    background: rgba(0, 160, 210, 0.04) !important;
+    border-radius: 4px !important;
+    outline: 1px dashed rgba(0, 160, 210, 0.3) !important;
+    outline-offset: 2px !important;
+}
+
+/* Root sortable container */
+.jux-sortable-root {
+    min-height: 10px;
+}
+
+/* Nested sortable list */
+.jux-sortable-list {
+    min-height: 8px;
+}
+
+/* Toggle spacer keeps alignment for leaf nodes */
+.jux-hierarchy-toggle-spacer {
+    display: inline-block !important;
+    width: 20px !important;
+    flex-shrink: 0 !important;
+}

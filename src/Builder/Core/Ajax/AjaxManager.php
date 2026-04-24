@@ -141,6 +141,10 @@ class AjaxManager
      */
     public function handleRenderPreview()
     {
+        if (!defined('JUX_BUILDER')) {
+            define('JUX_BUILDER', true);
+        }
+
         // Catch any stray output from shortcodes (warnings, notices, etc.)
         ob_start();
 

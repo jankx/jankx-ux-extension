@@ -208,7 +208,11 @@ class Column extends AbstractElement
                     if ($border_radius) $b_style .= 'border-radius:' . esc_attr($border_radius) . ';';
                     echo '<div class="outline-border border-' . esc_attr($border) . '"' . ($b_style ? ' style="' . $b_style . '"' : '') . '></div>';
                 }
-                echo do_shortcode($content);
+                $inner_content = do_shortcode($content);
+                if (trim($inner_content) === '' && defined('JUX_BUILDER')) {
+                    $inner_content = self::renderPlaceholder('col', __('Column', 'jankx'));
+                }
+                echo $inner_content;
                 ?>
             </div>
             <?php if ($sticky) : ?>

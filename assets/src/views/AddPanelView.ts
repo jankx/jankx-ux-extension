@@ -6,9 +6,13 @@ interface AddPanelViewOptions extends Backbone.ViewOptions {
     onAdd: (tag: string) => void;
 }
 
+/** Tags considered "layout containers" - regular elements cannot be placed directly in these */
+const LAYOUT_CONTAINERS = ['row', 'section', 'ux_block'];
+
 class AddPanelView extends Backbone.View<Backbone.Model, HTMLElement> {
     private _elements: Record<string, ElementDefinition>;
     private _onAdd: (tag: string) => void;
+    private _parentTag: string | undefined;
 
     events = {
         'click #jux-stack-close': 'close',
@@ -41,9 +45,36 @@ class AddPanelView extends Backbone.View<Backbone.Model, HTMLElement> {
         });
     }
 
+    /**
+     * Filter elements by parent context:
+     * - If parentTag is a layout container (e.g. 'row'), only show elements
+     *   whose `allow_in` explicitly includes that parent (e.g. only Column for Row).
+     * - Otherwise, hide elements that are ONLY allowed inside layout containers
+     *   (e.g. Column should not appear in the generic add panel or inside Column).
+     */
+    getFilteredElements(): Record<string, ElementDefinition> {
+        return Object.fromEntries(
+            Object.entries(this._elements).filter(([_tag, el]) => {
+                const allowIn: string[] = el.allow_in || [];
+
+                if (this._parentTag && LAYOUT_CONTAINERS.includes(this._parentTag)) {
+                    // Parent is a layout container: only show elements that explicitly allow this parent
+                    return allowIn.includes(this._parentTag);
+                } else {
+                    // Generic context or column context: hide elements restricted to layout containers only
+                    const restrictedToLayoutOnly =
+                        allowIn.length > 0 &&
+                        allowIn.every((p) => LAYOUT_CONTAINERS.includes(p));
+                    return !restrictedToLayoutOnly;
+                }
+            }),
+        );
+    }
+
     getCategorized(): Record<string, Array<[string, ElementDefinition]>> {
+        const filtered = this.getFilteredElements();
         const result: Record<string, Array<[string, ElementDefinition]>> = {};
-        Object.entries(this._elements).forEach(([tag, el]) => {
+        Object.entries(filtered).forEach(([tag, el]) => {
             const cat = el.category || 'General';
             if (!result[cat]) result[cat] = [];
             result[cat].push([tag, el]);
@@ -115,7 +146,8 @@ class AddPanelView extends Backbone.View<Backbone.Model, HTMLElement> {
         });
     }
 
-    open() {
+    open(parentTag?: string) {
+        this._parentTag = parentTag;
         this.renderElements();
         this.$('#jux-filter-elements').val('');
         this.$el.addClass('is-visible');
@@ -123,6 +155,7 @@ class AddPanelView extends Backbone.View<Backbone.Model, HTMLElement> {
     }
 
     close() {
+        this._parentTag = undefined;
         this.$el.removeClass('is-visible');
     }
 

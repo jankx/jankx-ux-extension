@@ -245,7 +245,13 @@ class Section extends AbstractElement
             ?>
 
             <div class="section-content relative">
-                <?php echo do_shortcode($content); ?>
+                <?php 
+                $inner_content = do_shortcode($content);
+                if (trim($inner_content) === '' && defined('JUX_BUILDER')) {
+                    $inner_content = self::renderPlaceholder('section', __('Section', 'jankx'));
+                }
+                echo $inner_content; 
+                ?>
             </div>
         </section>
         <?php

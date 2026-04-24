@@ -327,6 +327,13 @@ class Application
             </script>';
         }, 1);
 
+        wp_enqueue_style(
+            'jux-preview',
+            $assetsUrl . 'css/jux-preview.css',
+            ['dashicons'],
+            $version
+        );
+
         wp_enqueue_script(
             'jux-preview',
             $assetsUrl . 'js/jux-preview.js',

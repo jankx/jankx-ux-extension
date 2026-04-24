@@ -53,10 +53,24 @@ abstract class AbstractElement
     abstract public static function render($atts = [], $content = '');
 
     /**
-     * Parse WordPress atts to element options using shortcode_atts().
+     * Render placeholder for empty containers in builder mode
      */
-    protected static function parseAtts($atts, $defaults = [])
+    public static function renderPlaceholder($tag, $name = '')
     {
-        return shortcode_atts($defaults, $atts);
+        if (!defined('JUX_BUILDER')) return '';
+        $name = $name ?: ucfirst($tag);
+        return sprintf(
+            '<div class="jux-placeholder jux-placeholder-%s" data-tag="%s">
+                <div class="jux-placeholder-inner">
+                    <button class="jux-placeholder-add-btn">
+                        <span class="dashicons dashicons-plus"></span>
+                        %s
+                    </button>
+                </div>
+            </div>',
+            esc_attr($tag),
+            esc_attr($tag),
+            __('Add elements', 'jankx')
+        );
     }
 }
