@@ -17,7 +17,7 @@ class AjaxManager
         $this->registerHooks();
     }
 
-    protected function registerHooks()
+    public function registerHooks()
     {
         add_action('wp_ajax_jux_save_content', [$this, 'handleSave']);
         add_action('wp_ajax_jux_builder_do_shortcode', [$this, 'handleDoShortcode']);
@@ -40,6 +40,7 @@ class AjaxManager
 
         if (!current_user_can('edit_posts')) {
             wp_send_json_error('Permission denied');
+            return;
         }
 
         $postId = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;

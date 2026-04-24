@@ -71,6 +71,37 @@ class ElementRegistry
     }
 
     /**
+     * Alias for byCategory() used in tests
+     */
+    public static function getCategorizedElements()
+    {
+        return self::byCategory();
+    }
+
+    /**
+     * Search elements by name or tag
+     */
+    public static function search($query)
+    {
+        $query = strtolower($query);
+        return array_filter(self::$elements, function($el, $tag) use ($query) {
+            return strpos(strtolower($tag), $query) !== false || 
+                   strpos(strtolower($el['name'] ?? ''), $query) !== false;
+        }, ARRAY_FILTER_USE_BOTH);
+    }
+
+    /**
+     * Get elements by specific category
+     */
+    public static function getByCategory($category)
+    {
+        return array_filter(self::$elements, function($el) use ($category) {
+            return ($el['category'] ?? 'General') === $category;
+        });
+    }
+
+
+    /**
      * Remove element
      */
     public static function remove($tag)

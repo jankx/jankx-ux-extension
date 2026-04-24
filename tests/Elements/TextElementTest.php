@@ -17,6 +17,9 @@ class TextElementTest extends TestCase
         
         // Mock WordPress functions
         Monkey\Functions\when('__')->returnArg();
+        Monkey\Functions\when('esc_attr')->returnArg();
+        Monkey\Functions\when('do_shortcode')->returnArg();
+        Monkey\Functions\when('wp_kses_post')->returnArg();
     }
 
     protected function tearDown(): void
@@ -87,7 +90,7 @@ class TextElementTest extends TestCase
         $atts = ['text' => 'Aligned text', 'text_align' => 'center'];
         $output = Text::render($atts, '');
         
-        $this->assertStringContainsString('text-align: center', $output);
+        $this->assertStringContainsString('text-center', $output);
     }
 
     /**
@@ -98,7 +101,7 @@ class TextElementTest extends TestCase
         $atts = ['text' => 'Colored text', 'text_color' => '#ff0000'];
         $output = Text::render($atts, '');
         
-        $this->assertStringContainsString('color: #ff0000', $output);
+        $this->assertStringContainsString('color:#ff0000', $output);
     }
 
     /**

@@ -16,7 +16,7 @@ abstract class AbstractElement
      * Get element configuration.
      * Override in child class.
      */
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [];
     }

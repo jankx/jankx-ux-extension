@@ -1,44 +1,32 @@
 <?php
 /**
  * PHPUnit Bootstrap for Jankx UX Extension Tests
- *
- * Initializes Brain Monkey for mocking WordPress functions
  */
 
-// Autoload Composer dependencies
+// 1. Load Composer autoloader
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Initialize Brain Monkey
+// 2. Initialize Brain Monkey (Patchwork is started here)
 \Brain\Monkey\setUp();
 
-// Define WordPress constants if not defined
+// 3. Define WordPress constants
 define('JANKX_UX_DIR', dirname(__DIR__));
 define('JANKX_UX_URL', 'http://example.com/wp-content/themes/jankx/extensions/jankx-ux/');
 define('JANKX_UX_VERSION', '1.0.0');
 
-// Load the plugin files
-require_once JANKX_UX_DIR . '/src/Builder/ElementRegistry.php';
-require_once JANKX_UX_DIR . '/src/Builder/Elements/AbstractElement.php';
+/**
+ * Define WordPress mocks that do NOT conflict with Brain Monkey's redefinition
+ * Use Brain\Monkey\Functions\when() for global defaults that should persist
+ */
 
-// Mock common WordPress functions
-if (!function_exists('__')) {
-    function __($text, $domain = 'default') {
-        return $text;
-    }
-}
+\Brain\Monkey\Functions\stubs([
+    '__', 'esc_html__', 'esc_attr__', '_x', '_n', 'esc_html_x', 'esc_attr_x',
+    'wp_kses_post', 'wp_unslash', 'esc_attr',
+    'sanitize_text_field', 'sanitize_key', 'sanitize_title', 'absint',
+    'do_shortcode', 'esc_js', 'esc_url', 'esc_textarea'
+]);
 
-if (!function_exists('esc_html__')) {
-    function esc_html__($text, $domain = 'default') {
-        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-    }
-}
-
-if (!function_exists('esc_attr')) {
-    function esc_attr($text) {
-        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-    }
-}
-
+// Handle functions that might be called before/during Brain\Monkey initialization
 if (!function_exists('shortcode_atts')) {
     function shortcode_atts($pairs, $atts) {
         $atts = (array) $atts;
@@ -50,10 +38,20 @@ if (!function_exists('shortcode_atts')) {
     }
 }
 
-// Mock WordPress functions that are widely used
-if (!function_exists('add_action')) {
-    function add_action() {}
+if (!function_exists('is_wp_error')) {
+    function is_wp_error($a) { return $a instanceof WP_Error; }
 }
-if (!function_exists('add_filter')) {
-    function add_filter() {}
+
+if (!class_exists('WP_Error')) {
+    class WP_Error {
+        public function get_error_message() { return 'Error message'; }
+    }
 }
+
+// 4. Load the plugin files
+require_once JANKX_UX_DIR . '/src/Builder/ElementRegistry.php';
+require_once JANKX_UX_DIR . '/src/Builder/Elements/AbstractElement.php';
+require_once JANKX_UX_DIR . '/src/Builder/Elements/Text.php';
+require_once JANKX_UX_DIR . '/src/Builder/Core/Ajax/AjaxManager.php';
+require_once JANKX_UX_DIR . '/src/Builder/Core/ShortcodeParser.php';
+require_once JANKX_UX_DIR . '/src/Shortcodes/ShortcodeManager.php';

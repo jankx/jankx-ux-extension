@@ -10,9 +10,10 @@ class Text extends AbstractElement
 {
     protected static $tag = 'text';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
+            'tag'         => static::$tag,
             'type'        => 'element',
             'name'        => 'Text',
             'title'       => __('Text Block', 'jankx'),
@@ -51,6 +52,16 @@ class Text extends AbstractElement
                     'heading' => __('Text Color', 'jankx'),
                     'default' => '',
                 ],
+                'class' => [
+                    'type'    => 'textfield',
+                    'heading' => __('Custom Class', 'jankx'),
+                    'default' => '',
+                ],
+                '_label' => [
+                    'type'    => 'textfield',
+                    'heading' => __('Element Label', 'jankx'),
+                    'default' => '',
+                ],
             ],
             'allow_in'    => ['col', 'section', 'ux_block'],
         ];
@@ -71,7 +82,7 @@ class Text extends AbstractElement
 
         if ($options['visibility'] === 'hidden') return '';
 
-        $classes = ['jux-text'];
+        $classes = ['text-block'];
         $styles  = [];
 
         if (!empty($options['text_align'])) $classes[] = 'text-' . esc_attr($options['text_align']);
