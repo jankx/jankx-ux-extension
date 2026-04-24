@@ -8,7 +8,7 @@ class Stack extends AbstractElement
 {
     protected static $tag = 'ux_stack';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'container',

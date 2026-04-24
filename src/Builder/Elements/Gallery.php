@@ -8,7 +8,7 @@ class Gallery extends AbstractElement
 {
     protected static $tag = 'ux_gallery';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'element',

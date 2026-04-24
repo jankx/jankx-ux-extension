@@ -8,7 +8,7 @@ class Hotspot extends AbstractElement
 {
     protected static $tag = 'ux_hotspot';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'element',

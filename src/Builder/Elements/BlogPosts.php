@@ -8,7 +8,7 @@ class BlogPosts extends AbstractElement
 {
     protected static $tag = 'blog_posts';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'element',

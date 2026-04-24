@@ -9,7 +9,7 @@ class Image extends AbstractElement
 {
     protected static $tag = 'ux_image';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'element',

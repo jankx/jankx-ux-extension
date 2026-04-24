@@ -8,7 +8,7 @@ class TeamMember extends AbstractElement
 {
     protected static $tag = 'team_member';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'container',

@@ -9,7 +9,7 @@ class Banner extends AbstractElement
 {
     protected static $tag = 'ux_banner';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'     => 'container',

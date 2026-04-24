@@ -9,7 +9,7 @@ class Row extends AbstractElement
 {
     protected static $tag = 'row';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'container',

@@ -8,7 +8,7 @@ class ImageBox extends AbstractElement
 {
     protected static $tag = 'ux_image_box';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'container',

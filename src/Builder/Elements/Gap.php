@@ -9,7 +9,7 @@ class Gap extends AbstractElement
 {
     protected static $tag = 'gap';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'element',

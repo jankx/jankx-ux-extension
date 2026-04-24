@@ -9,7 +9,7 @@ class Slider extends AbstractElement
 {
     protected static $tag = 'ux_slider';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'container',

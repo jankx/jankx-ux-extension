@@ -9,7 +9,7 @@ class Section extends AbstractElement
 {
     protected static $tag = 'section';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'container',

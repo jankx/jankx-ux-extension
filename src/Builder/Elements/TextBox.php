@@ -9,7 +9,7 @@ class TextBox extends AbstractElement
 {
     protected static $tag = 'text_box';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'container',

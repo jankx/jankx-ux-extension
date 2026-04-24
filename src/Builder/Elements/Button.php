@@ -9,7 +9,7 @@ class Button extends AbstractElement
 {
     protected static $tag = 'button';
 
-    protected static function getConfig()
+    public static function getConfig()
     {
         return [
             'type'        => 'element',
